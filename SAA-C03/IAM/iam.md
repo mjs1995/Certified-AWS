@@ -26,3 +26,46 @@
   - MFA devices options in AWS
     - <img width="957" alt="image" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/8d4edd77-ffce-454d-aad6-34452d245f33">
     - <img width="911" alt="image" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/983a21cd-12dc-4bf5-95db-fac263626845">
+  - IAM > 보안 자격 증명 > 멀티 팩터 인증(MFA)
+    - <img width="861" alt="image" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/cfaab3e7-b4dd-44cc-a7c0-ecd48bf85741">
+    - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/4bfa0aef-b79c-4318-b078-9e2a781b51f0)
+- AWS에 액세스하기 위해 사용할 수 있는 세 가지 옵션
+  - AWS 관리 콘솔 (비밀번호 + MFA로 보호됨)
+  - AWS Command Line Interface (CLI): 액세스 키로 보호됨
+    - 커맨드 라인 쉘에서 명령어를 사용하여 AWS 서비스와 상호 작용할 수 있는 도구입니다.
+    - AWS 서비스의 공개 API에 직접 액세스할 수 있습니다.
+    - 자원을 관리하기 위해 스크립트를 개발할 수 있습니다.
+    - 오픈 소스로 제공됩니다. (https://github.com/aws/aws-cli)
+    - AWS 관리 콘솔을 사용하는 대안입니다.
+  - AWS 소프트웨어 개발 키트 (SDK) - 코드용: 액세스 키로 보호됨
+    - AWS 소프트웨어 개발 키트 (AWS SDK)
+    - 언어별 API (라이브러리 집합)
+    - AWS 서비스에 프로그래밍 방식으로 액세스하고 관리할 수 있게 해줍니다.
+    - 애플리케이션 내에 내장됩니다.
+    - 지원하는 것들
+      - SDK (JavaScript, Python, PHP, .NET, Ruby, Java, Go, Node.js, C++)
+      - 모바일 SDK (Android, iOS, ...)
+      - IoT 장치 SDK (임베디드 C, Arduino, ...)
+      - 예시: AWS CLI는 AWS SDK for Python으로 구축되었습니다.
+  - 액세스 키는 AWS 콘솔을 통해 생성됩니다.
+  - 사용자는 자체적으로 액세스 키를 관리합니다.
+  - 액세스 키는 비밀번호와 같으며 Access Key ID는 사용자 이름, Secret Access Key는 비밀번호
+  - 액세스 키 생성
+    - IAM > 사용자 > 보안 자격 증명 > 액세스 키 만들기 
+    - <img width="1013" alt="image" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/aabe0cc7-6eee-4831-acde-48934ee56599">
+    - vscode에서 aws cli에 연결해 줍니다.
+    - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/9610ee52-a45a-4d4e-a1b2-6dd264c7e28a)
+    - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/6ce3d07a-c8ec-41bf-95d3-38e4214bd5a4)
+- IAM Roles for Services
+  - 일부 AWS 서비스는 대신 작업을 수행해야 할 수 있습니다.
+  - 이를 위해 IAM 역할을 사용하여 AWS 서비스에 권한을 할당합니다.
+  - 일반적인 역할:
+    - EC2 인스턴스 역할
+    - 람다 함수 역할
+    - CloudFormation을 위한 역할
+  - IAM > 역할 > 역할 만들기 
+    - <img width="1290" alt="image" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/c5a56e90-135f-4830-aa91-25eb92745555">
+    - <img width="1292" alt="image" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/3f5f52d2-8f61-4ee2-a9ed-25503b58d295">
+
+
+
