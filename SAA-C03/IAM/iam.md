@@ -66,6 +66,26 @@
   - IAM > 역할 > 역할 만들기 
     - <img width="1290" alt="image" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/c5a56e90-135f-4830-aa91-25eb92745555">
     - <img width="1292" alt="image" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/3f5f52d2-8f61-4ee2-a9ed-25503b58d295">
+- IAM 보안 도구
+  - IAM Credentials Report (account-level)
+    - 계정의 모든 사용자와 각 사용자의 다양한 자격 증명 상태를 나열한 보고서입니다.
+  - IAM Access Advisor (user-level)
+    - 액세스 어드바이저는 사용자에게 부여된 서비스 권한과 해당 서비스에 마지막으로 액세스한 시간을 보여줍니다.
+    - 이 정보를 사용하여 정책을 수정할 수 있습니다.
+- IAM 정리
+  - 사용자(User): 물리적 사용자와 매핑되며 AWS 콘솔에 대한 비밀번호를 가지고 있습니다.
+  - 그룹(Group): 사용자만을 포함하는 그룹입니다.
+  - 정책(Policy): 사용자 또는 그룹에 대한 권한을 기술하는 JSON 문서입니다.
+  - 역할(Role): EC2 인스턴스 또는 AWS 서비스용 역할입니다.
+  - 보안(Security): MFA(Multi-Factor Authentication) + 비밀번호 정책
+  - AWS CLI: 명령줄 인터페이스를 사용하여 AWS 서비스를 관리합니다.
+  - AWS SDK: 프로그래밍 언어를 사용하여 AWS 서비스를 관리합니다.
+  - 액세스 키(Access Keys): CLI 또는 SDK를 사용하여 AWS에 액세스합니다.
+  - 감사(Audit): IAM 자격 증명 보고서 및 IAM 액세스 어드바이저
+- IAM 정책의 문장은 시드, 효과, 원칙, 조치, 리소스, 그리고 조건으로 구성됩니다. 버전은 IAM 정책 자체의 일부이지, 문장의 일부가 아닙니다.
+
+
+
 
 
 
