@@ -1,0 +1,104 @@
+# ELB
+- 고가용성 및 스케일링성 
+  - 확장성은 응용 프로그램 또는 시스템이 적응하여 더 큰 작업 부하를 처리할 수 있는 능력을 의미합니다.
+  - 두 가지 유형의 확장성이 있습니다:
+    - 수직적 확장성(Vertical Scalability)
+      - 수직 확장성은 인스턴스의 크기를 증가시키는 것을 의미합니다.
+      - 예를 들어, 애플리케이션이 t2.micro에서 실행된다고 가정해보겠습니다. 해당 애플리케이션을 수직적으로 확장한다는 것은 t2.large에서 실행하는 것을 의미합니다.
+      - 수직 확장성은 분산 시스템이 아닌 일반적인 시스템(예: 데이터베이스)에서 매우 흔합니다.
+      - RDS, ElastiCache는 수직 확장성을 가질 수 있는 서비스입니다.
+      - 일반적으로 수직 확장에는 제한이 있을 수 있습니다(하드웨어 제한).
+    - 수평적 확장성 (= 탄력성, )
+      - 수평 확장성은 애플리케이션의 인스턴스 또는 시스템의 수를 증가시키는 것을 의미합니다.
+      - 수평 확장성은 분산 시스템을 의미합니다.
+      - 웹 애플리케이션이나 현대적인 애플리케이션에서 매우 흔합니다.
+      - 아마존 EC2와 같은 클라우드 제공 제품들 덕분에 수평 확장이 쉽습니다.
+    - 확장성은 고가용성과 연관되어 있지만 다른 개념입니다.
+  - 고가용성
+    - 고가용성은 일반적으로 수평 확장성과 함께 사용됩니다.
+    - 고가용성은 최소한 2개의 데이터 센터(가용 영역)에서 애플리케이션 또는 시스템을 실행하는 것을 의미합니다.
+    - 고가용성의 목표는 데이터 센터 손실에도 시스템이 계속 가동될 수 있도록 하는 것입니다.
+    - 고가용성은 수동적일 수 있습니다(예: RDS Multi AZ).
+    - 고가용성은 활성적일 수 있습니다(수평 확장성).
+- load balancing
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/37a97197-e26f-4db0-bcff-1c915354a17b)
+  - 로드 밸런서는 트래픽을 다수의 서버(예: EC2 인스턴스)로 전달하는 서버입니다.
+  - 사용 이유
+    - 다수의 다운스트림 인스턴스 간에 부하를 분산시킵니다.
+    - 애플리케이션에 대한 단일 접근 지점(DNS)을 노출합니다.
+    - 다운스트림 인스턴스의 장애를 원활하게 처리합니다.
+    - 정기적인 인스턴스 상태 확인을 수행합니다.
+    - 웹 사이트의 SSL 종료(HTTPS)를 제공합니다.
+    - 쿠키를 사용하여 세션 고정을 적용합니다.
+    - 다중 가용 영역에서의 고가용성을 제공합니다.
+    - 공용 트래픽과 개인 트래픽을 분리합니다.
+  - Elastic Load Balancer 사용 이유
+    - Elastic Load Balancer는 관리형 로드 밸런서입니다.
+      - AWS는 로드 밸런서가 작동하는 것을 보장합니다.
+      - AWS는 업그레이드, 유지 보수, 고가용성을 관리합니다.
+      - AWS는 몇 가지 구성 설정만 제공합니다.
+    - 직접 로드 밸런서를 설정하는 것이 비용이 적게 들지만 더 많은 노력이 필요합니다.
+    - 많은 AWS 서비스와 통합되어 있습니다.
+      - EC2, EC2 Auto Scaling 그룹, Amazon ECS
+      - AWS Certificate Manager (ACM), CloudWatch
+      - Route 53, AWS WAF, AWS Global Accelerator
+  - Health Checks(상태 확인)
+    - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/16220fbd-90a4-4a7d-87a3-35688315d8aa)
+    - 상태 확인은 로드 밸런서가 전달하는 인스턴스가 요청에 응답할 수 있는지 여부를 확인할 수 있게 합니다.
+    - 상태 확인은 특정 포트와 경로(/health는 일반적으로 사용됨)에서 수행됩니다.
+    - 응답이 200(OK)이 아닌 경우 인스턴스는 건강하지 않은 것으로 간주됩니다.
+  - Types of load balancer on AWS
+    - AWS는 4가지 유형의 관리형 로드 밸런서를 제공합니다.
+      - Classic Load Balancer (v1 - 이전 세대) – 2009 – CLB
+        - HTTP, HTTPS, TCP, SSL (보안 TCP)
+      - Application Load Balancer (v2 - 새로운 세대) – 2016 – ALB
+        - HTTP, HTTPS, WebSocket
+      - Network Load Balancer (v2 - 새로운 세대) – 2017 – NLB
+        - TCP, TLS (보안 TCP), UDP
+      - Gateway Load Balancer – 2020 – GWLB
+        - 레이어 3 (네트워크 레이어)에서 작동하는 IP 프로토콜을 사용합니다.
+    - 전반적으로 더 많은 기능을 제공하는 새로운 세대의 로드 밸런서를 사용하는 것이 권장됩니다.
+    - 일부 로드 밸런서는 내부(비공개) 또는 외부(공개) ELB로 설정할 수 있습니다.
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/0f81ecd0-2730-45dc-ad9c-80254657ea14)
+- Application Load Balancer (v2)
+  - <img width="1038" alt="image" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/2bbef7a6-6bb3-41d0-b712-786f2a8aca55">
+  - Application Load Balancer는 Layer 7 (HTTP)입니다.
+  - 여러 대의 HTTP 애플리케이션을 기계(타겟 그룹)에 대해 로드 밸런싱합니다.
+  - 동일한 기계에서 여러 애플리케이션에 대해 로드 밸런싱합니다. (예: 컨테이너)
+  - HTTP/2 및 WebSocket을 지원합니다.
+  - 리디렉션을 지원합니다. (예: HTTP에서 HTTPS로의 리디렉션)
+  - 다른 대상 그룹에 대한 라우팅 테이블
+    - URL의 경로에 따른 라우팅 (example.com/users 및 example.com/posts)
+    - URL의 호스트 이름에 따른 라우팅 (one.example.com 및 other.example.com)
+    - 쿼리 문자열, 헤더에 따른 라우팅 (example.com/users?id=123&order=false)
+  - ALB는 마이크로서비스 및 컨테이너 기반 애플리케이션에 적합합니다 (예: Docker 및 Amazon ECS).
+  - ECS에서 동적 포트로 리디렉션하기 위한 포트 매핑 기능이 있습니다.
+  - 반면, 여러 개의 클래식 로드 밸런서가 각각의 애플리케이션에 필요합니다.
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/baada3e2-2662-40fd-b314-b21c62611013)
+  - Target Groups
+    - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/0d830a4b-f6c8-4ddd-bf3c-0048309545c7)
+    - EC2 인스턴스 (Auto Scaling 그룹에서 관리 가능) - HTTP
+    - ECS 작업 (ECS 자체에서 관리) - HTTP
+    - 람다 함수 - HTTP 요청이 JSON 이벤트로 변환됩니다.
+    - IP 주소 - 사설 IP여야 합니다.
+    - ALB는 여러 대상 그룹으로 라우팅할 수 있습니다.
+    - 상태 확인은 대상 그룹 수준에서 수행됩니다.
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/9adfa9b9-7f8a-4f3f-80cf-d01ed86717cf)
+    - 고정된 호스트 이름 (XXX.region.elb.amazonaws.com)
+    - 애플리케이션 서버는 클라이언트의 IP를 직접 볼 수 없습니다.
+      - 클라이언트의 실제 IP는 X-Forwarded-For 헤더에 삽입됩니다.
+      - 또한 포트 (X-Forwarded-Port)와 프로토콜 (X-Forwarded-Proto)을 얻을 수 있습니다.
+- Network Load Balancer (v2)
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/1769d0dc-9516-41bd-80dd-29fda362c5ce)
+  - 네트워크 로드 밸런서 (Layer 4)는 다음을 수행할 수 있습니다
+    - TCP 및 UDP 트래픽을 인스턴스로 전달합니다.
+    - 초당 수백만 개의 요청을 처리할 수 있습니다.
+    - 지연 시간이 적어서 약 100ms입니다 (ALB의 400ms 대비).
+  - NLB는 AZ 당 하나의 정적 IP를 가지며, 탄력적 IP를 할당하는 기능을 지원합니다 (특정 IP를 화이트리스트에 추가하는 데 도움이 됩니다).
+  - NLB는 고성능, TCP 또는 UDP 트래픽을 처리하기 위해 사용됩니다.
+  - Target Groups
+    - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/50ac45cf-defa-431a-89b5-aab3f23a38f7)
+    - EC2 인스턴스
+    - IP 주소 - 사설 IP여야 합니다.
+    - Application Load Balancer
+    - Health Check는 TCP, HTTP 및 HTTPS 프로토콜을 지원합니다.
