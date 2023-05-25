@@ -102,3 +102,126 @@
     - IP 주소 - 사설 IP여야 합니다.
     - Application Load Balancer
     - Health Check는 TCP, HTTP 및 HTTPS 프로토콜을 지원합니다.
+- Gateway Load Balancer
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/075df23d-c584-442d-b83a-a4167773eab6)
+  - AWS에서 3rd party 네트워크 가상 애플라이언스를 배포, 확장 및 관리합니다.
+  - 예시: 방화벽, 침입 탐지 및 방지 시스템, 딥 패킷 검사 시스템, 페이로드 조작 등
+  - 네트워크 레이어(Layer 3)에서 작동하여 IP 패킷을 처리합니다.
+  - 다음과 같은 기능을 결합합니다.
+    - 투명 네트워크 게이트웨이 - 모든 트래픽의 단일 진입/이탈 지점
+    - 로드 밸런서 - 트래픽을 가상 애플라이언스에 분산합니다.
+  - 포트 6081에서 GENEVE 프로토콜을 사용합니다.
+  - Target Groups
+    - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/65368ff7-195f-4e71-b198-614fe70d1e64)
+    - EC2 인스턴스
+    - IP 주소는 사설 IP여야 합니다.
+- 스티키 세션(Sticky Sessions (Session Affinity))
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/a781895a-b921-47d0-b74d-ea4ec5386ffa)
+  - Classic Load Balancer, Application Load Balancer, 및 Network Load Balancer에는 항상 동일한 클라이언트가 로드 밸런서 뒤의 동일한 인스턴스로 리디렉션되도록 유지되는 스티키 세션을 구현할 수 있습니다.
+  - CLB 및 ALB의 경우, 스티키 세션에 사용되는 "쿠키"에는 제어 가능한 만료 날짜가 있습니다.
+  - 사용 사례: 사용자가 세션 데이터를 잃지 않도록 보장합니다.
+  - 스티키 세션을 사용하면 백엔드 EC2 인스턴스에 대한 부하의 불균형이 발생할 수 있습니다.
+  - <img width="846" alt="image" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/3a0f5e62-6a5e-49f6-b561-b7b29ce93cdf">
+  - Cookie Names
+    - 애플리케이션 기반 쿠키
+      - 사용자 정의 쿠키
+        - 대상(target)에서 생성
+        - 애플리케이션에서 필요한 사용자 정의 속성을 포함할 수 있음
+        - 각 대상 그룹마다 개별적으로 쿠키 이름을 지정해야 함
+        - AWSALB, AWSALBAPP 또는 AWSALBTG는 사용하지 말아야 함 (ELB에서 예약됨)
+      - 애플리케이션 쿠키
+        - 로드 밸런서에서 생성
+        - 쿠키 이름은 AWSALBAPP임
+      - 기간 기반 쿠키
+        - 로드 밸런서에서 생성된 쿠키
+        - ALB의 경우 쿠키 이름은 AWSALB, CLB의 경우 쿠키 이름은 AWSELB
+  - 크로스존 로드 밸런싱
+    - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/49c0873b-6ca9-4803-9652-1dadf27b4caf)
+    - Application Load Balancer
+      - 기본적으로 활성화되어 있습니다 (Target Group 수준에서 비활성화 가능)
+      - AZ 간 데이터에 대해서는 추가 비용이 청구되지 않습니다.
+    - Network Load Balancer 및 Gateway Load Balancer
+      - 기본적으로 비활성화되어 있습니다.
+      - 활성화된 경우 AZ 간 데이터에 대해 요금이 청구됩니다.
+    - Classic Load Balancer
+      - 기본적으로 비활성화되어 있습니다.
+      - 활성화된 경우 AZ 간 데이터에 대해서는 추가 비용이 청구되지 않습니다.
+- SSL/TLS - Basics 
+  - SSL 인증서는 클라이언트와 로드 밸런서 간의 트래픽을 전송 중에 암호화하는 데 사용됩니다 (in-flight 암호화).
+  - SSL은 Secure Sockets Layer의 약어로, 연결을 암호화하는 데 사용됩니다.
+  - TLS는 Transport Layer Security의 약어로, 보다 최신 버전입니다.
+  - 요즘은 주로 TLS 인증서가 사용되지만, 사람들은 여전히 SSL로 언급합니다.
+  - 공용 SSL 인증서는 인증 기관 (CA)에 의해 발급됩니다.
+  - Comodo, Symantec, GoDaddy, GlobalSign, Digicert, Letsencrypt 등이 있습니다.
+  - SSL 인증서는 만료일이 있으며 (사용자가 설정함), 갱신해야 합니다.
+  - SSL Certificates
+    - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/1e4e53dc-cb47-4d30-a0df-721f3552aef2)
+    - 로드 밸런서는 X.509 인증서 (SSL/TLS 서버 인증서)를 사용합니다.
+    - ACM (AWS Certificate Manager)을 사용하여 인증서를 관리할 수 있습니다.
+    - 또는 직접 인증서를 업로드할 수도 있습니다.
+    - HTTPS 리스너
+      - 기본 인증서를 지정해야 합니다.
+      - 여러 도메인을 지원하기 위해 선택적으로 인증서 목록을 추가할 수 있습니다.
+      - 클라이언트는 SNI (Server Name Indication)을 사용하여 도달하려는 호스트 이름을 지정할 수 있습니다.
+      - SSL/TLS의 이전 버전(레거시 클라이언트)를 지원하기 위해 보안 정책을 지정할 수 있습니다.
+    - 클래식 로드 밸런서 (v1)
+      - 하나의 SSL 인증서만 지원합니다.
+      - 다중 호스트명 및 다중 SSL 인증서를 사용하려면 여러 개의 CLB를 사용해야 합니다.
+    - 애플리케이션 로드 밸런서 (v2)
+      - 다중 리스너와 다중 SSL 인증서를 지원합니다.
+      - Server Name Indication (SNI)을 사용하여 작동합니다.
+    - 네트워크 로드 밸런서 (v2)
+      - 다중 리스너와 다중 SSL 인증서를 지원합니다.
+      - Server Name Indication (SNI)을 사용하여 작동합니다.
+  - Server Name Indication (SNI)
+    - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/0083b398-3703-4126-b406-adb057bc98ff)
+    - SNI는 하나의 웹 서버에 여러 개의 SSL 인증서를 로드하는 문제를 해결합니다 (여러 웹 사이트 제공).
+    - SNI는 "최신" 프로토콜로, 클라이언트가 초기 SSL 핸드셰이크에서 대상 서버의 호스트 이름을 지정해야 합니다.
+    - 서버는 그런 다음 올바른 인증서를 찾거나 기본 인증서를 반환합니다.
+    - 참고
+      - SNI는 ALB 및 NLB (최신 세대) 및 CloudFront에서만 작동합니다.
+      - CLB (이전 세대)에서는 작동하지 않습니다.
+- 연결 드레이닝
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/09e3a29c-67ad-43bb-98c9-e9b542d423ab)
+  - 이름
+    - Connection Draining (CLB용, 연결 드레이닝)
+    - Deregistration Delay (ALB 및 NLB용, 등록 취소 지연)
+  - 인스턴스가 해제 등록되거나 비정상적인 상태일 때 "수행 중인 요청"을 완료하는 데 걸리는 시간
+  - 해제 등록 중인 EC2 인스턴스로 새 요청을 보내지 않도록 함
+  - 1에서 3600초까지 설정 가능 (기본값: 300초)
+  - 비활성화할 수도 있음 (값을 0으로 설정)
+  - 요청이 짧은 경우 낮은 값을 설정합니다.
+- Auto Scaling Group(ASG)
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/dcf0ccd5-b509-4807-90de-5a8b81cfec84)
+  - 실제로 웹사이트와 애플리케이션의 부하는 변할 수 있습니다.
+  - 클라우드에서는 서버를 매우 빠르게 생성하고 폐기할 수 있습니다.
+  - Auto Scaling Group (ASG)의 목표는 다음과 같습니다
+    - 부하가 증가하면 EC2 인스턴스를 추가하여 스케일 아웃합니다.
+    - 부하가 감소하면 EC2 인스턴스를 제거하여 스케일 인합니다.
+    - 최소 및 최대 EC2 인스턴스 수를 유지합니다.
+    - 새 인스턴스를 로드 밸런서에 자동으로 등록합니다.
+    - 이전 인스턴스가 종료된 경우 (예: 비정상 상태인 경우) 이전 인스턴스를 다시 생성합니다.
+  - ASG는 무료입니다 (기반이 되는 EC2 인스턴스만 비용이 발생합니다).
+  - Auto Scaling Group in AWS With Load Balancer
+    - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/b1bcf93d-181f-448e-a006-7f2642cad49f)
+  - Auto Scaling Group Attributes
+    - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/46842ea9-079c-47ea-afd7-7de3c146ef22)
+    - 런치 템플릿 (이전의 "런치 구성"은 폐지되었습니다)
+      - AMI + 인스턴스 유형
+      - EC2 사용자 데이터
+      - EBS 볼륨
+      - 보안 그룹
+      - SSH 키 페어
+      - EC2 인스턴스용 IAM 역할
+      - 네트워크 + 서브넷 정보
+      - 로드 밸런서 정보
+    - 최소 크기 / 최대 크기 / 초기 용량
+    - 스케일링 정책
+  - CloudWatch Alarms & Scaling
+    - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/50a24d4d-53f6-4464-9e0c-47b36ea753c6)
+    - CloudWatch 알람을 기반으로 ASG의 스케일링이 가능합니다.
+    - 알람은 평균 CPU나 사용자 정의 지표와 같은 메트릭을 모니터링합니다.
+    - 평균 CPU와 같은 메트릭은 ASG 인스턴스 전체에 대해 계산됩니다.
+    - 알람에 따라
+      - 스케일 아웃 정책을 생성할 수 있습니다 (인스턴스 수 증가)
+      - 스케일 인 정책을 생성할 수 있습니다 (인스턴스 수 감소)
