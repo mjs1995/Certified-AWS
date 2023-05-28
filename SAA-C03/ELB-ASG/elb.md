@@ -225,3 +225,26 @@
     - 알람에 따라
       - 스케일 아웃 정책을 생성할 수 있습니다 (인스턴스 수 증가)
       - 스케일 인 정책을 생성할 수 있습니다 (인스턴스 수 감소)
+  - Dynamic Scaling Policies(동적 스케일링 정책)
+    - Target Tracking 스케일링
+      - 가장 간단하고 설정하기 쉽습니다.
+      - 예시: 평균 ASG CPU를 약 40%로 유지하고 싶을 때
+    - Simple / Step 스케일링
+      - CloudWatch 알람이 트리거될 때 (예: CPU > 70%), 2개의 인스턴스 추가
+      - CloudWatch 알람이 트리거될 때 (예: CPU < 30%), 1개의 인스턴스 제거
+    - 예약된 동작
+      - 예상된 사용 패턴에 기반하여 스케일링을 수행합니다.
+      - 예시: 매주 금요일 오후 5시에 최소 용량을 10으로 증가시킵니다.
+  - Predictive Scaling
+    - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/a192b6a0-16ff-47b5-891d-d9bb13110fff)
+    - 예측 스케일링: 지속적으로 부하를 예측하고 스케일링을 미리 예약합니다.
+  - 스케일링 지표
+    - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/3ec293fc-7939-4c1c-bbe2-18c6bdd7bed7)
+    - CPUUtilization: 인스턴스의 평균 CPU 사용률
+    - RequestCountPerTarget: EC2 인스턴스당 요청 수가 안정적인지 확인
+    - Average Network In / Out (네트워크 바운드 애플리케이션인 경우)
+    - 사용자 정의 메트릭 (CloudWatch를 통해 전송하는 경우)
+  - 휴지 기간(확장 후 대기 시간)
+    - 확장 활동이 발생한 후에는 대기 시간(cooldown) 기간에 들어갑니다 (기본값은 300초입니다).
+    - 대기 시간 동안 ASG는 추가 인스턴스를 시작하거나 종료하지 않습니다 (메트릭이 안정화되기 위해).
+    - 조언: 대기 시간을 줄이고 더 빠르게 요청을 처리하여 대기 시간을 감소시키기 위해 구성 시간을 줄이기 위해 준비된 AMI를 사용하십시오.
