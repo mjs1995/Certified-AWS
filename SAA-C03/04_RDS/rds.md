@@ -106,4 +106,165 @@
     - 일상적인 유지 보수 (Routine Maintenance)
     - Backtrack: 백업을 사용하지 않고 원하는 시점으로 데이터 복원
   - <img width="1069" alt="image" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/b8ba2901-8572-402b-996a-eecf66c80365">
+- Aurora Replicas - Auto Scaling
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/c22cdabd-725b-436d-86dc-acfd9b37fc7b)
+- Custom Endpoints
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/592bc0f7-7652-4f8d-84af-201f6ba5e96e)
+  - Aurora 인스턴스의 하위 집합을 사용자 정의 엔드포인트로 정의합니다.
+  - 예시: 특정 레플리카에서 분석 쿼리 실행
+  - 사용자 정의 엔드포인트를 정의한 후에는 일반적으로 Reader 엔드포인트를 사용하지 않습니다.
+- Aurora Serverless
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/ceb9fb61-7349-44cb-bfe6-baaced95c6b8)
+  - 실제 사용량에 따라 자동으로 데이터베이스 인스턴스화 및 자동 스케일링
+  - 빈도가 적거나 간헐적이거나 예측할 수 없는 워크로드에 적합
+  - 용량 계획이 필요 없음
+  - 초당 과금으로 더 비용 효율적일 수 있음
+- Aurora Multi-Master
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/3a0a7c0a-4855-4bea-b099-55ba55413c47)
+  - 쓰기 노드의 즉각적인 장애 조치(고가용성)를 위한 경우
+  - 모든 노드가 읽기/쓰기를 수행 - 새로운 마스터로 RR을 승격하는 대신
+- Global Aurora
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/f07808b1-a19a-46c5-85d6-11861670c472)
+  - Aurora Cross Region Read Replicas
+    - 재해 복구를 위해 유용함
+    - 간단하게 설정할 수 있음
+  - Aurora Global Database (권장)
+    - 1개의 주요 지역 (읽기/쓰기)
+    - 최대 5개의 보조 지역 (읽기 전용), 복제 지연은 1초 미만
+    - 보조 지역마다 최대 16개의 읽기 전용 복제본
+    - 지연 시간 감소에 도움을 줌
+    - 다른 지역으로 승격 (재해 복구를 위해)하는 경우 복구 시간 목표(RTO)는 1분 미만
+    - 전형적인 지역 간 복제는 1초 미만 소요됨
+- Aurora Machine Learning
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/08980b2d-8b4f-4528-8648-0fc8188f16fe)
+  - SQL을 통해 애플리케이션에 기계 학습 기반 예측을 추가할 수 있도록 지원합니다.
+  - Aurora와 AWS ML 서비스 간의 간단하고 최적화된 보안 통합
+  - 지원되는 서비스
+    - Amazon SageMaker (모든 ML 모델과 함께 사용)
+    - Amazon Comprehend (감성 분석에 사용)
+  - ML 경험이 없어도 사용할 수 있습니다.
+  - 사기 탐지, 광고 타게팅, 감성 분석, 제품 추천과 같은 사용 사례
+- RDS Backups
+  - 자동 백업
+    - 데이터베이스의 매일 전체 백업 (백업 창간 동안)
+    - RDS에서는 5분마다 트랜잭션 로그를 백업합니다.
+    - => 가장 오래된 백업부터 5분 전까지의 어떤 시점으로도 복원 가능
+    - 1일부터 35일까지의 보존 기간, 자동 백업 비활성화를 위해 0으로 설정
+  - 수동 DB 스냅샷
+    - 사용자가 직접 트리거하여 생성
+    - 원하는 기간 동안 백업 보존
+  - 팁: 중지된 RDS 데이터베이스에서도 여전히 스토리지 비용이 발생합니다. 오랜 기간 중지할 계획이 있다면 스냅샷을 생성하고 복원하는 것이 좋습니다.
+- Aurora Backups
+  - 자동 백업
+    - 1일부터 35일까지 (비활성화할 수 없음) 
+    - 해당 기간 내에서 시점 복구 가능 
+  - 수동 DB 스냅샷
+    - 사용자에 의해 수동으로 트리거됨 
+    - 원하는 만큼 백업 보존
+- RDS & Aurora Restore options
+  - RDS/Aurora 백업 또는 스냅샷을 복원하면 새로운 데이터베이스가 생성됩니다.
+  - S3에서 MySQL RDS 데이터베이스 복원
+    - 온프레미스 데이터베이스의 백업을 생성합니다.
+    - Amazon S3에 저장합니다 (객체 스토리지).
+    - MySQL을 실행하는 새로운 RDS 인스턴스에 백업 파일을 복원합니다.
+  - S3에서 MySQL Aurora 클러스터 복원
+    - Percona XtraBackup을 사용하여 온프레미스 데이터베이스를 백업합니다.
+    - 백업 파일을 Amazon S3에 저장합니다.
+    - MySQL을 실행하는 새로운 Aurora 클러스터에 백업 파일을 복원합니다.
+- Aurora Database Cloning(복제 기능)
+  - 기존 Aurora DB 클러스터에서 새로운 클러스터를 생성합니다.
+  - 스냅샷 및 복원보다 빠릅니다.
+  - 복사 기반 쓰기 프로토콜을 사용합니다.
+  - 초기에는 새로운 DB 클러스터가 원본 DB 클러스터와 동일한 데이터 볼륨을 사용합니다 (빠르고 효율적이며 복사가 필요하지 않음).
+  - 새로운 DB 클러스터 데이터에 업데이트가 이루어지면 추가 저장소가 할당되고 데이터가 분리되기 위해 복사됩니다.
+  - 매우 빠르고 비용 효율적입니다.
+  - "운영" 데이터베이스에 영향을 주지 않고 "스테이징" 데이터베이스를 생성하는 데 유용합니다.
+- RDS 및 Aurora 보안
+  - 정지 상태에서의 암호화
+    - 데이터베이스 마스터 및 복제본 암호화는 AWS KMS를 사용하여 정의되어야 함 - 시작 시간에 정의해야 함
+    - 마스터가 암호화되지 않은 경우 읽기 전용 복제본을 암호화할 수 없음
+    - 암호화되지 않은 데이터베이스를 암호화하려면 DB 스냅샷을 통해 복원으로 진행해야 함
+  - 전송 중 암호화: 기본적으로 TLS를 지원하며, AWS TLS 루트 인증서를 클라이언트 측에서 사용함
+  - IAM 인증: 사용자 이름/암호 대신 IAM 역할을 사용하여 데이터베이스에 연결함
+  - 보안 그룹: RDS/Aurora DB에 대한 네트워크 액세스 제어
+  - RDS Custom을 제외하고 SSH 사용 불가
+  - 감사 로그를 활성화하고 CloudWatch Logs로 전송하여 보관 기간을 연장할 수 있음
+- Amazon RDS Proxy
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/3ad7e279-e263-4a50-8e4d-975ab2997f75)
+  - RDS의 완전히 관리되는 데이터베이스 프록시
+  - 애플리케이션이 데이터베이스와 연결한 DB 연결을 풀링하고 공유할 수 있게 함
+  - 데이터베이스 자원에 가하는 부하(예: CPU, RAM)를 줄이고 연결 개수(및 타임아웃)를 최소화하여 데이터베이스 효율성 향상
+  - 서버리스, 오토스케일링, 고가용성 (다중 가용 영역)
+  - RDS 및 Aurora 장애 조치 시간을 최대 66% 감소
+  - RDS (MySQL, PostgreSQL, MariaDB, MS SQL Server) 및 Aurora (MySQL, PostgreSQL) 지원
+  - 대부분의 애플리케이션에는 코드 변경이 필요하지 않음
+  - DB에 대한 IAM 인증 강제화 및 AWS Secrets Manager에 자격 증명 안전하게 저장
+  - RDS 프록시는 절대로 공개적으로 접근할 수 없음(VPC에서 접근해야 함)
 
+# Amazon ElastiCache
+- Amazon ElastiCache
+  - RDS가 관리형 관계형 데이터베이스를 제공하는 것과 같음
+  - ElastiCache는 관리형 Redis 또는 Memcached를 제공합니다.
+  - 캐시는 매우 높은 성능과 낮은 지연 시간을 가진 인메모리 데이터베이스입니다.
+  - 읽기 집중적인 워크로드에서 데이터베이스의 부하를 줄이는 데 도움이 됩니다.
+  - 응용 프로그램을 상태를 가지지 않는 상태로 만드는 데 도움이 됩니다.
+  - AWS는 OS 유지 관리/패치, 최적화, 설정, 구성, 모니터링, 장애 복구 및 백업을 담당합니다.
+  - ElastiCache를 사용하려면 응용 프로그램 코드를 상당히 변경해야 합니다.
+- ElastiCache Solution Architecture
+  - DB Cache
+    - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/1052f0ff-e8d8-4760-9397-14a972d1adff)
+    - 응용 프로그램은 ElastiCache에서 사용할 수 없는 경우 RDS에서 가져와 ElastiCache에 저장합니다.
+    - RDS의 부하를 완화하는 데 도움이 됩니다.
+    - 캐시에는 가장 최신 데이터만 사용되도록 만들기 위한 무효화 전략이 필요합니다.
+  - User Session Store
+    - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/620c8cf9-cd93-4680-be0f-c4f48e3e782f)
+    - 사용자가 응용 프로그램에 로그인합니다.
+    - 응용 프로그램은 세션 데이터를 ElastiCache에 기록합니다.
+    - 사용자가 응용 프로그램의 다른 인스턴스에 접근합니다.
+    - 해당 인스턴스는 데이터를 검색하고 사용자는 이미 로그인되어 있습니다.
+– Redis vs Memcached
+  - REDIS
+    - 자동 장애 조치를 위한 Multi AZ
+    - 읽기 확장과 고가용성을 위한 Read Replicas
+    - AOF 지속성을 통한 데이터 내구성
+    - 백업 및 복원 기능
+    - Set 및 Sorted Set을 지원
+  - MEMCACHED
+    - 데이터 파티셔닝을 위한 다중 노드 (sharding)
+    - 고가용성 (복제) 없음
+    - 비영속성
+    - 백업 및 복원 없음
+    - 멀티스레드 아키텍처
+  - 두 기술의 가장 큰 차이점 : 레디스는 고가용성과 백업 읽기 전용 복제본 등이 있고 멤캐시트는 데이터를 손실할 수 없는 단순한 분산 캐시입니다. 가용성이 높지 않고 백업과 복원 기능도 없습니다. 
+- Cache Security
+  - ElastiCache는 Redis를 위해 IAM 인증을 지원합니다.
+  - ElastiCache의 IAM 정책은 AWS API 수준의 보안에만 사용됩니다.
+  - Redis AUTH
+    - Redis 클러스터를 생성할 때 "비밀번호/토큰"을 설정할 수 있습니다.
+    - 이는 캐시에 대한 보안의 추가 수준입니다 (보안 그룹 위에).
+    - 전송 중 SSL 암호화 지원
+  - Memcached
+    - SASL 기반 인증을 지원합니다 (고급 기능)
+- Patterns for ElastiCache
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/3c0c0f0f-2853-453e-8f6f-4e88ed2b6ccf)
+  - 게으른 로딩 (Lazy Loading): 모든 읽기 데이터가 캐시에 저장되며, 데이터는 캐시에서 오래된 상태가 될 수 있습니다.
+  - 쓰기 시에 데이터베이스에 쓰여지는 동시에 캐시에 데이터를 추가하거나 업데이트하는 쓰기 스루 (Write Through)
+  - 세션 저장소: 임시 세션 데이터를 캐시에 저장합니다 (TTL 기능 사용)
+- Redis Use Case
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/7ddec162-a8b6-4bfd-99ee-df0006fe72e2)
+  - 게임 리더보드는 계산적으로 복잡합니다.
+  - Redis Sorted set은 고유성과 요소 순서를 보장합니다.
+  - 새로운 요소가 추가될 때마다 실시간으로 순위가 매겨지고 올바른 순서로 추가됩니다.
+- 중요한 포트
+  - FTP: 21
+  - SSH: 22
+  - SFTP: 22 (SSH와 같음)
+  - HTTP: 80
+  - HTTPS: 443
+- RDS 데이터베이스 포트
+  - PostgreSQL: 5432
+  - MySQL: 3306
+  - Oracle RDS: 1521
+  - MSSQL Server: 1433
+  - MariaDB: 3306 (MySQL과 같음)
+  - Aurora: 5432 (PostgreSQL와 호환될 경우) 또는 3306 (MySQL과 호환될 경우)
