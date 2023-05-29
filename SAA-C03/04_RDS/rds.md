@@ -1,0 +1,109 @@
+
+# RDS
+- RDS는 Relational Database Service의 약어입니다.
+- SQL을 쿼리 언어로 사용하는 DB를 위한 관리형 DB 서비스입니다.
+- AWS가 관리하는 클라우드에서 데이터베이스를 생성할 수 있습니다.
+  - 포스트그레스(PostgreSQL)
+  - MySQL
+  - MariaDB
+  - 오라클(Oracle)
+  - Microsoft SQL Server
+  - 오로라(Aurora) (AWS 독점 데이터베이스)
+- EC2 인스턴스에 자체 DB 서비스를 배포하지 않고 RDS를 사용하는 이유 
+  - RDS는 관리형 서비스입니다
+    - 자동 프로비저닝, OS 패치
+    - 특정 타임스탬프로 연속 백업 및 복원(시점 복원)
+    - 모니터링 대시보드
+    - 개선된 읽기 성능을 위한 읽기 레플리카
+    - 재해 복구를 위한 다중 가용 영역(Multi AZ) 설정
+    - 업그레이드를 위한 유지 보수 창
+    - 수직 및 수평 확장 가능성
+    - EBS로 지원되는 스토리지(gp2 또는 io1)
+  - 그러나 인스턴스에 SSH로 접속할 수 없습니다.
+- Storage Auto Scaling
+  - RDS DB 인스턴스의 스토리지를 동적으로 증가시키는 데 도움이 됩니다.
+  - RDS가 무료 데이터베이스 스토리지가 부족한 것을 감지하면 자동으로 확장됩니다.
+  - 데이터베이스 스토리지를 수동으로 확장하는 것을 피할 수 있습니다.
+  - 최대 스토리지 한계(데이터베이스 스토리지의 최대 제한)를 설정해야 합니다.
+  - 자동으로 스토리지를 수정하는 조건
+    - 무료 스토리지가 할당된 스토리지의 10%보다 적은 경우
+    - 낮은 스토리지가 최소 5분 동안 지속됨
+    - 마지막 수정 이후 6시간이 경과함
+  - 예측할 수 없는 워크로드를 갖는 애플리케이션에 유용합니다.
+  - 모든 RDS 데이터베이스 엔진(MariaDB, MySQL, PostgreSQL, SQL Server, Oracle)을 지원합니다.
+- RDS Read Replicas for read scalability
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/2977b848-a94c-4964-802a-52a9e9a6e572)
+  - 최대 15개의 읽기 전용 복제본
+  - AZ 내, AZ 간 또는 리전 간에 설정할 수 있습니다.
+  - 복제는 비동기적으로 이루어지므로 읽기 작업은 최종적으로 일관성을 갖습니다.
+  - 복제본은 독립적인 데이터베이스로 승격될 수 있습니다.
+  - 애플리케이션은 읽기 전용 복제본을 활용하기 위해 연결 문자열을 업데이트해야 합니다.
+  - Use Cases
+    - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/30187e88-580a-40d0-a006-9edf4754b3bc)
+    - 일반적인 부하를 처리하는 프로덕션 데이터베이스가 있습니다.
+    - 분석을 위해 보고 애플리케이션을 실행하려고 합니다.
+    - 새로운 작업을 실행하기 위해 읽기 전용 복제본을 생성합니다.
+    - 프로덕션 애플리케이션에는 영향을 주지 않습니다.
+    - 읽기 전용 복제본은 SELECT (읽기) 작업에 사용되며 INSERT, UPDATE, DELETE와 같은 작업에는 사용되지 않습니다.
+  - 네트워킹 비용
+    - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/221042af-45ee-4e1d-8767-53457efd890e)
+    - AWS에서 한 AZ에서 다른 AZ로 데이터가 전송될 때 네트워크 비용이 발생합니다.
+    - 동일한 리전 내에서의 RDS Read Replicas의 경우, 해당 비용은 청구되지 않습니다.
+- RDS 다중 AZ(재해복구로 자주 사용됨) 
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/e15530fc-81ac-4e8b-ac04-9c4b591ea2b4)
+  - SYNC 복제
+  - 하나의 DNS 이름 - 자동 애플리케이션 장애 조치(스탠바이로의)
+  - 가용성 증가
+  - AZ 손실, 네트워크 손실, 인스턴스 또는 스토리지 장애 발생 시 장애 조치
+  - 애플리케이션에 수동 개입이 없음
+  - 확장을 위해 사용되지 않음
+  - 참고: Read Replicas는 재해 복구(DR)를 위해 Multi AZ로 설정할 수 있습니다.
+- From Single-AZ to Multi-AZ
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/c08c9cae-fc01-40e1-bf8d-c2334d5b6cbc)
+  - 제로 다운타임 운영 (DB를 중지할 필요 없음)
+  - 데이터베이스의 "수정"을 클릭하기만 하면 됩니다.
+  - 내부적으로 다음이 수행됩니다
+    - 스냅샷이 촬영됩니다.
+    - 새로운 AZ에 스냅샷에서 새로운 DB가 복원됩니다.
+    - 두 개의 데이터베이스 간에 동기화가 설정됩니다.
+- RDS Custom
+  - OS 및 데이터베이스 커스터마이징을 통한 관리되는 Oracle 및 Microsoft SQL Server 데이터베이스
+  - RDS: AWS에서 데이터베이스의 설정, 운영 및 확장을 자동화
+  - 커스텀: 기본 데이터베이스 및 OS에 대한 액세스로 설정을 구성하고, 패치를 설치하고, 기능을 활성화할 수 있음
+  - SSH 또는 SSM 세션 관리자를 사용하여 기본 EC2 인스턴스에 액세스
+  - 커스터마이징을 수행하기 위해 자동화 모드 비활성화, 커스터마이징 전에 DB 스냅샷을 가져가는 것이 좋음
+  - RDS vs. RDS 커스텀
+    - RDS: 전체 데이터베이스와 OS가 AWS에 의해 관리됨
+    - RDS 커스텀: 기본 OS 및 데이터베이스에 대한 전체 관리자 액세스
+- Amazon Aurora
+  - Aurora는 AWS의 프로프라이어터리 기술로, 오픈 소스가 아닙니다.
+  - Aurora DB로서 Postgres와 MySQL을 모두 지원합니다. 이는 Aurora가 Postgres나 MySQL 데이터베이스처럼 작동하도록 드라이버가 동작한다는 의미입니다.
+  - Aurora는 "AWS 클라우드 최적화"되었으며, RDS의 MySQL에 비해 5배, RDS의 Postgres에 비해 3배 이상의 성능 향상을 제공합니다.
+  - Aurora 스토리지는 자동으로 10GB 단위로 증가하며 최대 128TB까지 확장할 수 있습니다.
+  - Aurora는 최대 15개의 레플리카를 가질 수 있으며, 복제 프로세스는 MySQL보다 빠르며 (지연 시간이 하위 10ms 이하), 장애 조치(Failover)가 즉각적으로 이루어집니다. Aurora는 HA (고가용성) 기능을 기본적으로 제공합니다.
+  - Aurora는 RDS보다 비용이 더 많이 발생하지만 (20% 추가 비용), 더 효율적입니다.
+  - Aurora High Availability and Read Scaling
+    - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/9697eefe-bb56-45cf-8522-06f9222468e4)
+    - 하나의 Amazon Aurora 인스턴스에서는 데이터의 6개 복사본이 3개의 가용 영역(Availability Zone)에 걸쳐 배치됩니다.
+      - 쓰기 작업에는 6개 중 4개의 복사본이 필요합니다.
+      - 읽기 작업에는 6개 중 3개의 복사본이 필요합니다.
+      - 피어 투 피어 복제를 통해 자체 복구 기능을 제공합니다.
+      - 스토리지는 수백 개의 볼륨에 걸쳐 스트라이핑(striping)되어 저장됩니다.
+    - 하나의 Aurora 인스턴스가 쓰기 작업을 처리하는 마스터 역할을 수행합니다.
+    - 마스터의 자동 장애 조치(failover)는 30초 이내에 이루어집니다.
+    - 마스터와 최대 15개의 Aurora 읽기 전용 레플리카가 읽기 작업을 처리합니다.
+    - 교차 리전 복제(Cross Region Replication) 기능을 지원합니다.
+  - Aurora DB Cluster
+    - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/2f8c187f-632d-4743-b546-bb74274b7bec)
+  - 기능
+    - 자동 장애 조치 (Automatic fail-over)
+    - 백업 및 복구 (Backup and Recovery)
+    - 격리 및 보안 (Isolation and security)
+    - 산업 규정 준수 (Industry compliance)
+    - 버튼 클릭으로 확장 (Push-button scaling)
+    - 다운타임 없는 자동 패치 (Automated Patching with Zero Downtime)
+    - 고급 모니터링 (Advanced Monitoring)
+    - 일상적인 유지 보수 (Routine Maintenance)
+    - Backtrack: 백업을 사용하지 않고 원하는 시점으로 데이터 복원
+  - <img width="1069" alt="image" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/b8ba2901-8572-402b-996a-eecf66c80365">
+
