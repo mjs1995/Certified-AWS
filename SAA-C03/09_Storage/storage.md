@@ -1,0 +1,229 @@
+# Advanced Storage on AWS
+- AWS Snow Family
+  - AWS Snow Family는 안전하고 휴대 가능한 장치로, 엣지에서 데이터를 수집하고 처리하며, AWS로 데이터를 이동시키는 데 사용됩니다.
+  - 데이터 마이그레이션
+    - Snowcone, Snowball Edge, Snowmobile
+  - 엣지 컴퓨팅
+    - Snowcone, Snowball Edge
+  - Snowball Edge
+    - 데이터 전송을 위한 물리적인 데이터 이동 솔루션으로, TB 또는 PB 단위의 데이터를 AWS로 이동하거나 AWS에서 이동할 수 있습니다. 
+    - 네트워크를 통한 데이터 이동에 비해 더욱 효율적이며, 네트워크 요금을 지불하지 않아도 됩니다. 
+    - 데이터 전송 작업 당 비용이 부과되며, 블록 스토리지와 Amazon S3와 호환되는 객체 스토리지를 제공합니다.
+    - Snowball Edge Storage Optimized는 블록 볼륨 및 S3 호환 객체 스토리지를 위한 80TB의 HDD 용량을 제공합니다. 
+    - Snowball Edge Compute Optimized는 블록 볼륨 및 S3 호환 객체 스토리지를 위한 42TB의 HDD 또는 28TB의 NVMe 용량을 제공합니다.
+    - Snowball Edge는 대규모 데이터의 클라우드 마이그레이션, 데이터 센터 비활성화, 재해 복구 등 다양한 용도로 사용될 수 있습니다.
+  - AWS Snowcone 및 Snowcone SSD
+    - 어디서나 사용할 수 있는 작고 휴대 가능한 컴퓨팅 장치로, 가혹한 환경에서도 견고하고 안전하게 사용할 수 있습니다. 무게는 4.5 파운드(2.1 kg)로 가벼우며, 엣지 컴퓨팅, 스토리지 및 데이터 전송에 사용됩니다.
+    - Snowcone은 8TB의 HDD 스토리지를 제공하며, Snowcone SSD는 14TB의 SSD 스토리지를 제공합니다. Snowball이 맞지 않는 공간 제약 환경에서 Snowcone을 사용하면 됩니다. 배터리 및 케이블은 별도로 제공해야 합니다.
+    - Snowcone은 인터넷에 연결하여 AWS DataSync를 사용하여 데이터를 전송하거나, 오프라인으로 AWS로 보낼 수 있습니다.
+  - AWS Snowmobile
+    -  EB(엑사바이트) 단위의 데이터를 전송할 수 있는 솔루션입니다. 
+    -  Snowmobile은 각각 100PB의 용량을 가지고 있으며, 병렬로 여러 대를 사용할 수 있습니다. 
+    -  온도 조절, GPS, 24/7 비디오 감시 등 고도의 보안 기능을 갖추고 있습니다. 
+    -  Snowball보다 10PB 이상의 데이터를 전송해야 할 경우에 더 효율적입니다.
+  - 사용 프로세스
+    - AWS 콘솔에서 Snowball 장치 배송을 요청합니다.
+    - 서버에 Snowball 클라이언트 또는 AWS OpsHub을 설치합니다.
+    - Snowball을 서버에 연결하고 클라이언트를 사용하여 파일을 복사합니다.
+    - 작업을 마친 후 장치를 다시 발송합니다(올바른 AWS 시설로 이동).
+    - 데이터가 S3 버킷에 로드됩니다.
+    - Snowball은 완전히 초기화됩니다.
+- 에지 컴퓨팅(Edge Computing)
+  - 데이터가 엣지 위치에서 생성되는 동안 데이터를 처리하는 것을 의미합니다. 
+  - 도로 위의 트럭, 바다 위의 배, 지하의 광산과 같은 위치에서 데이터를 처리합니다. 이러한 위치는 인터넷 접속이 제한되거나 없을 수 있으며, 컴퓨팅 자원에 대한 쉬운 접근이 제한될 수 있습니다. 
+  - 이러한 상황에서는 Snowball Edge 또는 Snowcone 장치를 설치하여 에지 컴퓨팅을 수행합니다.
+  - 에지 컴퓨팅의 사용 사례는 다양합니다
+    - 데이터 사전 처리
+    - 엣지에서의 기계 학습
+    - 미디어 스트림의 트랜스코딩
+    - 필요한 경우 장치를 AWS로 반환하여 데이터 전송 등
+  - Snow Family - 에지 컴퓨팅
+    - Snowcone 및 Snowcone SSD (더 작음)
+      - 2개의 CPU, 4GB의 메모리, 유선 또는 무선 접속
+      - 케이블 또는 선택적인 배터리를 사용한 USB-C 전원
+    - Snowball Edge - Compute Optimized
+      - 104개의 가상 CPU, 416 GiB의 RAM
+      - 선택적인 GPU (비디오 처리 또는 기계 학습에 유용)
+      - 28TB NVMe 또는 42TB HDD 사용 가능한 저장소
+    - Snowball Edge - Storage Optimized
+      - 최대 40개의 가상 CPU, 80 GiB의 RAM, 80TB의 저장소
+      - 객체 저장소 클러스터링 가능
+      - 모두: EC2 인스턴스 및 AWS Lambda 함수 실행 가능 (AWS IoT Greengrass 사용)
+      - 장기 배포 옵션: 1년 및 3년 할인 가격
+- AWS OpsHub
+  - Snow Family 장치를 관리하기 위해 컴퓨터나 랩톱에 설치하는 소프트웨어입니다. 과거에는 Snow Family 장치를 사용하기 위해 CLI (Command Line Interface 도구)가 필요했지만, 오늘날에는 AWS OpsHub를 사용하여 Snow Family 장치를 관리할 수 있습니다.
+  - AWS OpsHub를 사용하면 다음과 같은 작업을 수행할 수 있습니다
+    - 단일 또는 클러스터 장치의 잠금 해제 및 구성
+    - 파일 전송
+    - Snow Family 장치에서 실행 중인 인스턴스의 시작 및 관리
+    - 장치의 메트릭 (저장 용량, 장치에서 실행 중인 인스턴스 등) 모니터링
+    - 호환되는 AWS 서비스 (예: Amazon EC2 인스턴스, AWS DataSync, Network File System (NFS))를 장치에서 시작
+    - AWS OpsHub를 사용하면 CLI 없이도 편리하게 Snow Family 장치를 관리하고 모니터링할 수 있습니다.
+- Solution Architecture: Snowball into Glacier
+  - Snowball은 직접적으로 Glacier로 가져올 수는 없습니다. Glacier로 데이터를 가져오려면 먼저 Amazon S3를 사용해야하며, 이를 S3 라이프사이클 정책과 결합해야합니다.
+
+# Amazon FSx
+- AWS에서 제공하는 3rd 파티 고성능 파일 시스템을 시작할 수 있습니다.
+- 완전히 관리되는 서비스입니다.
+- FSx for Lustre
+  - Lustre는 대규모 컴퓨팅을 위한 병렬 분산 파일 시스템입니다.
+  - Lustre라는 이름은 "Linux"와 "클러스터"에서 유래되었습니다.
+  - 기계 학습, 고성능 컴퓨팅 (HPC)
+  - 비디오 처리, 금융 모델링, 전자 설계 자동화
+  - 초당 수백 GB 이상의 확장성, 수백만 IOPS, 서브 밀리초의 지연 시간을 지원합니다.
+  - 스토리지 옵션
+    - SSD - 낮은 지연 시간, IOPS 집약적인 워크로드, 작고 무작위 파일 작업
+    - HDD - 처리량 집약적인 워크로드, 크고 순차적인 파일 작업
+  - S3와의 원활한 통합
+    - FSx를 통해 S3를 "읽을 수" 있습니다.
+    - 계산 결과를 다시 S3에 기록할 수 있습니다 (FSx를 통해).
+  - 온프레미스 서버에서 사용할 수 있습니다 (VPN 또는 Direct Connect)
+  - 파일 시스템 배포 옵션
+    - 스크래치 파일 시스템
+      - 임시 저장소
+      - 데이터는 복제되지 않음 (파일 서버가 실패하면 데이터가 유지되지 않음)
+      - 고성능 (6배 빠르며 TiB당 200MBps)
+      - 사용 사례: 단기 처리, 비용 최적화
+    - 영속적 파일 시스템
+      - 장기 저장소
+      - 데이터는 동일한 가용 영역 내에서 복제됨
+      - 몇 분 내에 실패한 파일을 교체할 수 있음
+      - 사용 사례: 장기 처리, 중요한 데이터
+- FSx for Windows(파일 서버)
+  - FSx for Windows는 완전히 관리되는 Windows 파일 시스템 공유 드라이브입니다.
+  - SMB 프로토콜 및 Windows NTFS를 지원합니다.
+  - Microsoft Active Directory 통합, ACL, 사용자 할당량 등을 지원합니다.
+  - Linux EC2 인스턴스에 마운트할 수 있습니다.
+  - Microsoft의 분산 파일 시스템 (DFS) 네임스페이스를 지원합니다. (여러 파일을 여러 FS에 걸쳐 그룹화)
+  - 초당 10GB 이상의 확장성, 수백만 IOPS, 수백 PB의 데이터를 지원합니다.
+  - 스토리지 옵션
+    - SSD - 지연 시간에 민감한 워크로드 (데이터베이스, 미디어 처리, 데이터 분석 등)
+    - HDD - 다양한 워크로드에 적합 (홈 디렉토리, CMS 등)
+  - 온프레미스 인프라에서 액세스할 수 있습니다 (VPN 또는 Direct Connect).
+  - Multi-AZ (고가용성)로 구성할 수 있습니다.
+  - 데이터는 매일 S3에 백업됩니다.
+- FSx for NetApp ONTAP
+  - AWS에서 관리되는 NetApp ONTAP
+  - NFS, SMB, iSCSI 프로토콜과 호환되는 파일 시스템
+  - ONTAP 또는 NAS에서 실행 중인 작업을 AWS로 이동할 수 있음
+  - 다음과 함께 작동함
+    - Linux
+    - Windows
+    - MacOS
+    - VMware Cloud on AWS
+    - Amazon Workspaces 및 AppStream 2.0
+    - Amazon EC2, ECS 및 EKS
+  - 저장소는 자동으로 축소 또는 확장됨
+  - 스냅샷, 복제, 저비용, 압축 및 데이터 중복 제거
+  - 시점 복제 (새로운 작업 테스트에 유용)
+- FSx for OpenZFS
+  - AWS에서 관리되는 OpenZFS 파일 시스템
+  - NFS (v3, v4, v4.1, v4.2)와 호환되는 파일 시스템
+  - ZFS에서 실행 중인 작업을 AWS로 이동할 수 있음
+  - 다음과 함께 작동함
+    - Linux
+    - Windows
+    - MacOS
+    - VMware Cloud on AWS
+    - Amazon Workspaces 및 AppStream 2.0
+    - Amazon EC2, ECS 및 EKS
+  - 최대 1,000,000 IOPS 및 <0.5ms 지연 시간
+  - 스냅샷, 압축 및 저비용
+  - 시점 복제 (새로운 작업 테스트에 유용)
+
+# 스토리지 Gateway
+- 하이브리드 클라우드 스토리지
+  - AWS는 "하이브리드 클라우드"를 촉진하고 있습니다.
+  - 인프라의 일부는 클라우드에 있고 일부는 온프레미스에 있습니다.
+  - 이는 다음과 같은 이유로 발생할 수 있습니다.
+    - 클라우드 마이그레이션에 시간이 오래 걸릴 경우
+    - 보안 요구 사항
+    - 규정 요구 사항
+    - IT 전략
+  - S3는 EFS/NFS와 달리 소유권이 있는 스토리지 기술입니다. 그렇다면 온프레미스에서 S3 데이터를 어떻게 노출시킬까요? • AWS 스토리지 게이트웨이
+- AWS Storage Cloud Native Options
+  - Block 
+    - Amazon EBS 
+    - EC2 Instance
+  - File 
+    - Amazon EFS 
+    - Amazon FSx
+  - Object
+    - Amazon S3 
+    - Amazon Glacier
+- AWS 스토리지 게이트웨이
+  - 온프레미스 데이터와 클라우드 데이터 간의 연결을 담당하는 역할
+  - 사용 사례
+    - 재해 복구
+    - 백업 및 복원
+    - 계층화된 스토리지
+    - 온프레미스 캐시 및 저지연 파일 액세스
+  - 스토리지 게이트웨이의 유형
+    - S3 파일 게이트웨이
+      - 구성된 S3 버킷은 NFS 및 SMB 프로토콜을 사용하여 접근 가능합니다.
+      - 가장 최근에 사용된 데이터는 파일 게이트웨이에 캐시됩니다.
+      - S3 표준, S3 표준 IA, S3 단일 가용 영역, S3 Intelligent Tiering을 지원합니다.
+      - 수명 주기 정책을 사용하여 S3 Glacier로의 전환을 지원합니다.
+      - 각 파일 게이트웨이에 대해 IAM 역할을 사용하여 버킷에 액세스할 수 있습니다.
+      - SMB 프로토콜은 사용자 인증을 위해 Active Directory (AD)와 통합되어 있습니다.
+    - FSx 파일 게이트웨이
+      - Amazon FSx for Windows 파일 서버에 대한 네이티브 액세스를 제공합니다.
+      - 자주 액세스되는 데이터를 위한 로컬 캐시 기능을 제공합니다.
+      - SMB, NTFS, Active Directory 등 Windows와의 원활한 호환성을 지원합니다.
+      - 그룹 파일 공유 및 홈 디렉터리에 유용합니다.
+    - 볼륨 게이트웨이
+      - iSCSI 프로토콜을 사용하여 S3를 백업으로 하는 블록 스토리지를 제공합니다.
+      - 온프레미스 볼륨을 복원하는 데 도움이 되는 EBS 스냅샷을 기반으로 합니다.
+      - Cached volumes: 가장 최근 데이터에 대한 저지연 액세스를 제공합니다.
+      - Stored volumes: 전체 데이터셋이 온프레미스에 저장되며, 일정 시간마다 S3로 백업이 스케줄되어집니다.
+    - 테이프 게이트웨이
+      - 일부 회사는 물리적 테이프를 사용하여 백업 프로세스를 진행합니다.
+      - Tape Gateway를 사용하면 회사는 클라우드에서 동일한 프로세스를 사용할 수 있습니다.
+      - Amazon S3 및 Glacier로 백업되는 가상 테이프 라이브러리(VTL)를 제공합니다.
+      - 기존 테이프 기반 프로세스(및 iSCSI 인터페이스)를 사용하여 데이터를 백업합니다.
+      - 주요 백업 소프트웨어 공급업체와 호환됩니다.
+- Hardware appliance
+  - Storage Gateway를 사용하려면 온프레미스 가상화가 필요합니다.
+  - 그렇지 않은 경우에는 Storage Gateway 하드웨어 애플라이언스를 사용할 수 있습니다.
+  - 이를 Amazon.com에서 구매할 수 있습니다.
+  - File Gateway, Volume Gateway, Tape Gateway와 함께 작동합니다.
+  - 필요한 CPU, 메모리, 네트워크, SSD 캐시 리소스를 갖추고 있습니다.
+  - 소규모 데이터 센터에서 매일 NFS 백업에 유용합니다.
+- AWS 전송 제품군
+  - AWS Transfer Family는 FTP 프로토콜을 사용하여 Amazon S3 또는 Amazon EFS로의 파일 전송을 위한 완전히 관리되는 서비스입니다.
+  - 지원되는 프로토콜
+    - AWS Transfer for FTP (File Transfer Protocol (FTP))
+    - AWS Transfer for FTPS (File Transfer Protocol over SSL (FTPS))
+    - AWS Transfer for SFTP (Secure File Transfer Protocol (SFTP))
+  - 관리형 인프라, 확장 가능성, 신뢰성, 고가용성 (다중 AZ)
+  - 시간당 프로비저닝된 엔드포인트 및 데이터 전송 (GB) 단위로 지불
+  - 사용자의 자격 증명을 서비스 내에서 저장 및 관리
+  - 기존 인증 시스템 (Microsoft Active Directory, LDAP, Okta, Amazon Cognito, 사용자 정의)과 통합
+  - 사용 예시: 파일 공유, 공개 데이터셋, CRM, ERP 등
+- AWS DataSync
+  - AWS DataSync는 대량의 데이터를 이동하기 위한 서비스입니다.
+    - 온프레미스 또는 다른 클라우드에서 AWS로의 데이터 이동 (NFS, SMB, HDFS, S3 API...) - 에이전트 필요
+    - AWS에서 AWS로의 데이터 이동 (다른 스토리지 서비스) - 에이전트 불필요
+  - 다음으로 동기화 가능
+    - Amazon S3 (Glacier를 포함한 모든 스토리지 클래스)
+    - Amazon EFS
+    - Amazon FSx (Windows, Lustre, NetApp, OpenZFS...)
+  - 복제 작업은 매시간, 매일, 매주 예약 가능
+  - 파일 권한과 메타데이터 보존 (NFS POSIX, SMB...)
+  - 한 개의 에이전트 작업은 10 Gbps의 대역폭을 사용할 수 있으며 대역폭 제한 설정 가능
+
+# 저장소 비교
+- S3: 객체 저장소
+- S3 Glacier: 객체 아카이브 저장소
+- EBS 볼륨: EC2 인스턴스에 대한 네트워크 저장소 (한 번에 하나의 인스턴스에 연결)
+- 인스턴스 스토리지: EC2 인스턴스용 물리적 저장소 (높은 IOPS)
+- EFS: Linux 인스턴스용 네트워크 파일 시스템, POSIX 파일 시스템
+- FSx for Windows: Windows 서버용 네트워크 파일 시스템
+- FSx for Lustre: 고성능 컴퓨팅용 Linux 파일 시스템
+- FSx for NetApp ONTAP: 높은 운영 체제 호환성
+- FSx for OpenZFS: 관리형 ZFS 파일 시스템
+- Storage Gateway: S3 및 FSx 파일 게이트웨이, 볼륨 게이트웨이 (캐시 및 저장), 테이프 게이트웨이
+- Transfer Family: Amazon S3 또는 Amazon EFS 위에 FTP, FTPS, SFTP 인터페이스
+- DataSync: 온프레미스에서 AWS로 또는 AWS에서 AWS로 데이터 동기화 일정 설정
+- Snowcone / Snowball / Snowmobile: 대량의 데이터를 물리적으로 클라우드로 이동하기 위한 장치
+- 데이터베이스: 특정 워크로드에 대한 인덱싱 및 쿼리가 가능한 저장소
