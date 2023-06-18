@@ -1,0 +1,330 @@
+# serverless
+- 서버리스(Serverless)는 개발자가 더 이상 서버를 관리할 필요가 없는 새로운 패러다임입니다.
+- 코드만 배포하면 됩니다.
+- 함수를 배포하기만 하면 됩니다!
+- 처음에는 Serverless == FaaS (함수 서비스)로 이해되었습니다.• AWS Lambda에 의해 서버리스 개념이 개척되었으나, 이제는 "데이터베이스, 메시징, 스토리지 등"과 같이 관리되는 모든 것을 포함합니다.
+- 서버리스는 서버가 없다는 것을 의미하는 것이 아닙니다.서버를 관리/프로비저닝/보지 않는다는 의미입니다.
+- Serverless in AWS 
+  - AWS Lambda 
+  - DynamoDB 
+  - AWS Cognito 
+  - AWS API Gateway 
+  - Amazon S3 
+  - AWS SNS & SQS 
+  - AWS Kinesis Data Firehose 
+  - Aurora Serverless 
+  - Step Functions 
+  - Fargate
+
+# AWS Lambda
+- AWS Lambda
+  - Amazon EC2
+    - 클라우드 내 가상 서버
+    - RAM과 CPU에 제한됩니다.
+    - 계속해서 실행됩니다.
+    - 스케일링은 서버를 추가하거나 제거하기 위한 개입이 필요합니다.
+  - Amazon Lambda
+    - 가상 함수 - 관리할 서버가 없습니다!
+    - 시간에 제한이 있으며 짧은 실행 시간을 가집니다.
+    - 요청에 따라 실행됩니다.
+    - 스케일링은 자동화됩니다!
+  - AWS Lambda의 이점
+    - 간편한 가격 책정
+      - 요청 및 계산 시간 당 지불
+      - 1,000,000개의 AWS Lambda 요청 및 400,000 GB의 계산 시간에 대한 무료 사용량
+    - AWS의 모든 서비스와 통합됨
+    - 다양한 프로그래밍 언어와 통합됨
+    - AWS CloudWatch를 통한 간편한 모니터링
+    - 함수 당 추가 리소스 획득이 간편함 (최대 10GB의 RAM까지!)
+    - RAM을 늘리면 CPU 및 네트워크 성능도 향상됩니다!
+  - AWS Lambda 언어 지원
+    - Node.js (JavaScript)
+    - Python
+    - Java (Java 8 호환)
+    - C# (.NET Core)
+    - Golang
+    - C# / Powershell
+    - Ruby
+    - Custom Runtime API (커뮤니티 지원, 예: Rust)
+    - Lambda 컨테이너 이미지
+      - 컨테이너 이미지는 Lambda Runtime API를 구현해야 함
+      - 임의의 Docker 이미지를 실행하는 경우 ECS / Fargate를 선호합니다.
+  - AWS Lambda 가격 정책: 예시
+    - 전반적인 가격 정보는 다음 링크에서 확인할 수 있습니다: https://aws.amazon.com/lambda/pricing/
+    - 호출 당 비용
+      - 첫 1,000,000개의 요청은 무료입니다.
+      - 그 이후로는 1백만 요청당 $0.20입니다. ($0.0000002 당 요청)
+    - 실행 시간 당 비용: (1ms 증가 단위)
+      - 매월 400,000 GB-초의 계산 시간은 무료입니다.
+      - 예를 들어, 함수가 1GB RAM인 경우 400,000초입니다.
+      - 예를 들어, 함수가 128MB RAM인 경우 3,200,000초입니다.
+      - 그 이후로는 600,000 GB-초당 $1.00입니다.
+    - AWS Lambda 실행 비용은 일반적으로 매우 저렴하므로 매우 인기가 있습니다.
+  - 알아둬야 할 AWS Lambda 제한 사항 - 지역별
+    - 실행
+      - 메모리 할당: 128MB에서 10GB까지 (1MB 증가)
+      - 최대 실행 시간: 900초 (15분)
+      - 환경 변수 (4KB)
+      - "함수 컨테이너"의 디스크 용량 (/tmp 내): 512MB에서 10GB까지
+      - 동시 실행 수: 1000 (증가 가능)
+    - 배포
+      - Lambda 함수 배포 크기 (압축된 .zip): 50MB
+      - 압축 풀린 배포 크기 (코드 + 종속성): 250MB
+      - 시작 시 다른 파일을 로드하기 위해 /tmp 디렉토리를 사용할 수 있습니다.
+      - 환경 변수 크기: 4KB
+- 에지에서의 맞춤화 (Customization At The Edge)
+  - 현대의 많은 애플리케이션은 어느 정도의 로직을 에지에서 실행합니다.
+  - 에지 함수 (Edge Function)
+    - 사용자가 작성하고 CloudFront 배포에 연결하는 코드
+    - 지연 시간을 최소화하기 위해 사용자 근처에서 실행됩니다.
+  - CloudFront는 두 가지 유형의 에지 함수를 제공합니다: CloudFront Functions 및 Lambda@Edge
+  - 전 세계에 배포된 서버를 관리할 필요가 없습니다.
+  - 사용 사례: CDN 콘텐츠 맞춤화
+  - 사용한 만큼만 비용 지불
+  - 완전히 서버리스
+- CloudFront Functions 및 Lambda@Edge의 사용 사례
+  - 웹 사이트 보안 및 개인 정보 보호
+  - 에지에서 동적 웹 애플리케이션 실행
+  - 검색 엔진 최적화 (SEO)
+  - 다양한 출처 및 데이터 센터 간 지능적인 라우팅
+  - 에지에서의 봇 방어
+  - 실시간 이미지 변환
+  - A/B 테스트
+  - 사용자 인증 및 권한 부여
+  - 사용자 우선순위 설정
+  - 사용자 추적 및 분석
+- CloudFront Functions
+  - 경량의 JavaScript 함수
+  - 고규모 및 지연 시간에 민감한 CDN 사용자 정의를 위해 사용됨
+  - 서브 밀리초(ms)의 시작 시간, 초당 수백만 개의 요청 처리 가능
+  - Viewer 요청 및 응답을 변경하는 데 사용됨
+    - Viewer Request: CloudFront가 Viewer로부터 요청을 받은 후
+    - Viewer Response: CloudFront가 응답을 Viewer에게 전달하기 전에
+  - CloudFront의 네이티브 기능 (CloudFront 내에서 코드를 관리)
+- Lambda@Edge
+  - NodeJS 또는 Python으로 작성된 Lambda 함수
+  - 초당 수천 개의 요청까지 확장 가능
+  - CloudFront 요청 및 응답을 변경하는 데 사용됨
+    - Viewer Request: CloudFront가 Viewer로부터 요청을 받은 후
+    - Origin Request: CloudFront가 원본으로 요청을 전달하기 전에
+    - Origin Response: CloudFront가 원본으로부터 응답을 받은 후
+    - Viewer Response: CloudFront가 응답을 Viewer에게 전달하기 전에
+  - 함수를 한 AWS 리전(us-east-1)에서 작성한 다음 CloudFront가 해당 위치로 복제함
+- CloudFront Functions Use Cases
+  - 캐시 키 정규화
+    - 요청 속성 (헤더, 쿠키, 쿼리 문자열, URL)을 변환하여 최적의 캐시 키 생성
+  - 헤더 조작
+    - 요청 또는 응답에서 HTTP 헤더를 삽입/수정/삭제
+  - URL 재작성 또는 리디렉션
+  - 요청 인증 및 인가
+    - 사용자 생성 토큰 (예: JWT) 생성 및 유효성 검사를 통한 요청 허용/거부
+- Lambda@Edge Use Cases:
+  - 더 긴 실행 시간 (여러 ms)
+  - 조정 가능한 CPU 또는 메모리
+  - 3rd party 라이브러리에 종속된 코드 (예: 다른 AWS 서비스에 액세스하기 위한 AWS SDK)
+  - 처리를 위해 외부 서비스에 대한 네트워크 액세스
+  - 파일 시스템 액세스 또는 HTTP 요청의 본문에 대한 액세스
+- 람다 네트워킹 
+  - 기본적으로 Lambda 함수는 자체 VPC가 아닌 AWS 소유 VPC에서 실행됩니다.
+  - 따라서 Lambda 함수는 VPC 내의 리소스 (RDS, ElastiCache, 내부 ELB 등)에 액세스할 수 없습니다.
+- Lambda in VPC 
+  - Lambda 함수에서 VPC 내의 리소스에 액세스하려면 VPC ID, 서브넷 및 보안 그룹을 정의해야 합니다.
+  - Lambda 함수는 지정한 서브넷에서 Elastic Network Interface (ENI)를 생성합니다.
+- Lambda with RDS Proxy 
+  - Lambda 함수가 직접 데이터베이스에 액세스하는 경우 고부하 상황에서 많은 연결을 열 수 있습니다.
+  - RDS Proxy를 사용하면 다음과 같은 이점이 있습니다
+    - DB 연결을 풀링하고 공유하여 확장성을 향상시킵니다.
+    - 연결 유지를 통해 장애 복구 시간을 66% 줄이고 연결을 보존하여 가용성을 향상시킵니다.
+    - IAM 인증을 강제화하고 자격 증명을 Secrets Manager에 저장함으로써 보안을 강화합니다.
+  - Lambda 함수는 RDS Proxy에 공개적으로 액세스할 수 없으므로 Lambda 함수는 VPC에 배포되어야 합니다.
+
+# DynamoDB
+- Amazon DynamoDB
+  - Amazon DynamoDB는 완전히 관리되며 여러 AZ에 복제되어 가용성이 높은 NoSQL 데이터베이스입니다. 
+  - 이는 관계형 데이터베이스가 아닌 트랜잭션 지원을 위한 데이터베이스입니다. 
+  - DynamoDB는 대규모 워크로드에 확장 가능하며 분산 데이터베이스로 동작합니다. 
+  - 초당 수백만 개의 요청, 수조 개의 행, 수백 TB의 저장 용량을 처리할 수 있습니다. 
+  - 성능 면에서도 빠르고 일관된 성능을 제공하며 응답 시간은 몇 자릿수 밀리초 수준입니다. 
+  - IAM과 통합되어 보안, 권한 부여 및 관리에 사용됩니다. 
+  - 저렴한 비용과 자동 확장 기능을 제공하며 유지 보수나 패치 작업이 필요하지 않고 항상 사용 가능합니다. 
+  - DynamoDB에는 표준 및 자주 액세스(IA) 테이블 클래스가 있습니다.
+  - DynamoDB는 테이블로 구성됩니다.
+  - 각 테이블에는 기본 키(생성 시 결정해야 함)가 있습니다.
+  - 각 테이블은 무한한 수의 항목(=행)을 가질 수 있습니다.
+  - 각 항목은 속성을 가지며(시간이 지남에 따라 추가 가능하며 null일 수 있음),
+  - 항목의 최대 크기는 400KB입니다.
+  - 지원되는 데이터 유형은 다음과 같습니다.
+    - 스칼라 유형 - 문자열, 숫자, 이진, 부울, null
+    - 문서 유형 - 목록, 맵
+    - 세트 유형 - 문자열 세트, 숫자 세트, 이진 세트
+  - 따라서 DynamoDB에서 스키마를 신속하게 진화시킬 수 있습니다.
+- DynamoDB - 읽기/쓰기 용량 모드
+  - 테이블의 용량(읽기/쓰기 처리량)을 관리하는 방식을 제어합니다.
+  - Provisioned 모드 (기본값)
+    - 초당 읽기/쓰기 수를 지정합니다.
+    - 용량을 사전에 계획해야 합니다.
+    - 제공된 Read Capacity Units (RCU) 및 Write Capacity Units (WCU)에 대해 비용을 지불합니다.
+    - RCU 및 WCU에 대한 자동 확장 모드 추가 가능
+  - 온디맨드 모드
+    - 읽기/쓰기가 워크로드에 따라 자동으로 확장/축소됩니다.
+    - 용량 계획이 필요하지 않습니다.
+    - 사용한 양에 대해서만 비용을 지불하며, 더 비싸지만($$$) 사용량이 예측할 수 없는 워크로드나 급격한 급증에 적합합니다.
+- DynamoDB Accelerator (DAX)
+  - DynamoDB를 위한 완전히 관리되고 높은 가용성을 갖는 메모리 캐시
+  - 캐싱을 통해 읽기 혼잡을 해결하는 데 도움을 줍니다.
+  - 캐시된 데이터의 지연 시간은 마이크로초 수준입니다.
+  - 응용 프로그램 로직 수정이 필요하지 않습니다 (기존 DynamoDB API와 호환됨).
+  - 캐시의 TTL은 기본적으로 5분입니다.
+- DynamoDB - 스트림 처리
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/578ab889-c3bb-485a-ab36-5a9cbbdb4c71)
+  - 테이블에서 항목 수준의 수정 (생성/업데이트/삭제)의 순서가 지정된 스트림
+  - 사용 사례
+    - 실시간 변경에 대한 반응 (사용자에게 환영 이메일 보내기)
+    - 실시간 사용 분석
+    - 파생 테이블에 삽입
+    - 크로스 리전 복제 구현
+    - DynamoDB 테이블의 변경에 대한 AWS Lambda 호출
+  - DynamoDB 스트림
+    - 24시간 보관 기간
+    - 제한된 수의 소비자
+    - AWS Lambda 트리거를 사용하거나 DynamoDB 스트림 Kinesis 어댑터를 사용하여 처리
+  - Kinesis Data Streams (신규 버전)
+    - 1년 보관 기간
+    - 많은 수의 소비자
+    - AWS Lambda, Kinesis Data Analytics, Kinesis Data Firehose, AWS Glue 스트리밍 ETL을 사용하여 처리
+- DynamoDB 글로벌 테이블
+  - DynamoDB 테이블을 여러 지역에서 저지연으로 액세스할 수 있도록 함
+  - 액티브-액티브 복제
+  - 응용 프로그램은 어떤 지역에서든 테이블을 읽거나 쓸 수 있음
+  - 사전 요구 사항으로 DynamoDB 스트림을 활성화해야 함
+- DynamoDB - Time To Live (TTL)
+  - 만료 타임스탬프 이후에 항목을 자동으로 삭제함
+  - 사용 사례: 현재 항목만 유지하여 저장된 데이터 양을 줄이고, 규제 요구 사항을 준수하고, 웹 세션 처리 등
+- DynamoDB - 재해 복구를 위한 백업
+  - 시점 복구(Point-in-Time Recovery, PITR)를 사용하여 지속적인 백업
+    - 선택적으로 최근 35일 동안 사용 가능
+    - 백업 창 내에서 어떤 시점으로든 복구 가능
+    - 복구 과정에서 새로운 테이블이 생성됨
+  - 요청 시 백업
+    - 장기 보존을 위한 완전한 백업, 명시적으로 삭제하기 전까지 보존
+    - 성능이나 지연에 영향을 주지 않음
+    - AWS Backup에서 구성 및 관리 가능 (지역간 복사 기능 제공)
+    - 복구 과정에서 새로운 테이블이 생성됨
+- DynamoDB - Amazon S3와의 통합
+  - S3로 내보내기 (PITR 활성화 필요)
+    - 최근 35일 동안의 어떤 시점에서든 작업 가능
+    - 테이블의 읽기 용량에 영향을 주지 않음
+    - DynamoDB 위에서 데이터 분석 수행
+    - 감사 목적으로 스냅샷 보존
+    - S3 데이터 위에서 ETL 수행 후 DynamoDB로 다시 가져오기
+    - DynamoDB JSON 또는 ION 형식으로 내보내기
+  - S3에서 가져오기
+    - CSV, DynamoDB JSON 또는 ION 형식으로 가져오기
+    - 기록 용량을 소비하지 않음
+    - 새로운 테이블이 생성됨
+    - 가져오기 오류는 CloudWatch Logs에 기록됨
+
+# AWS API Gateway
+- API Gateway
+  - AWS Lambda + API Gateway: 관리할 인프라가 없음
+  - WebSocket 프로토콜 지원
+  - API 버전 관리 (v1, v2...)
+  - 다양한 환경 관리 (dev, test, prod...)
+  - 보안 처리 (인증 및 권한 부여)
+  - API 키 생성, 요청 제한 처리
+  - Swagger / Open API를 가져와 빠르게 API 정의
+  - 요청과 응답의 변환 및 유효성 검사
+  - SDK 및 API 사양 생성
+  - API 응답 캐싱
+- Integrations High Level
+  - Lambda 함수 호출
+    - AWS Lambda를 백엔드로 사용하는 REST API를 간편하게 노출하는 방법
+  - HTTP
+    - 백엔드에서 HTTP 엔드포인트 노출
+    - 예: 온프레미스 내부 HTTP API, Application Load Balancer 등
+    - 왜? 요청 제한, 캐싱, 사용자 인증, API 키 등 추가 기능 적용
+  - AWS Service
+    - API Gateway를 통해 모든 AWS API 노출
+    - 예: AWS Step Function 워크플로우 시작, SQS에 메시지 게시 등
+    - 왜? 인증, 공개 배포, 요청 제어 등 추가 기능 적용
+- Endpoint Types
+  - Edge-Optimized (기본 설정): 전 세계의 클라이언트를 위한 것
+    - 요청이 CloudFront Edge 위치를 통해 라우팅됨 (지연 시간 개선)
+    - API Gateway는 여전히 단일 리전에 존재함
+  - Regional
+    - 동일한 리전 내의 클라이언트를 위한 것
+    - 수동으로 CloudFront와 함께 사용 가능 (캐싱 전략 및 배포에 대해 더 많은 제어 가능)
+  - Private
+    - 인터페이스 VPC 엔드포인트 (ENI)를 사용하여 VPC 내에서만 액세스 가능
+    - 액세스를 정의하기 위해 리소스 정책을 사용
+- Security
+  - 사용자 인증
+    - IAM 역할 (내부 애플리케이션에 유용)
+    - Cognito (외부 사용자를 위한 신원 확인 - 모바일 사용자 등)
+    - 사용자 정의 인증자 (사용자 고유의 로직)
+  - AWS Certificate Manager (ACM)와의 통합을 통한 사용자 정의 도메인 이름 HTTPS 보안
+    - Edge-Optimized 엔드포인트를 사용하는 경우 인증서는 us-east-1에 있어야 함
+    - Regional 엔드포인트를 사용하는 경우 인증서는 API Gateway 리전에 있어야 함
+    - Route 53에서 CNAME 또는 A-alias 레코드를 설정해야 함
+- AWS Step Functions
+  - AWS Step Functions는 Lambda 함수를 조정하는 데 사용되는 서버리스 비주얼 워크플로우를 구축하는 기능을 제공합니다.
+  - 주요 특징
+    - 순차, 병렬, 조건, 타임아웃, 오류 처리 등의 기능을 제공합니다.
+    - EC2, ECS, 온프레미스 서버, API Gateway, SQS 큐 등과 통합할 수 있습니다.
+    - 인간의 승인 기능을 구현할 수 있습니다.
+    - 주문 처리, 데이터 처리, 웹 애플리케이션 등 다양한 워크플로우에 사용할 수 있습니다.
+- Amazon Cognito
+  - Amazon Cognito는 웹 또는 모바일 애플리케이션과 상호 작용하기 위해 사용자에게 신원을 제공하는 기능을 제공합니다.
+  - Cognito User Pools
+    - 앱 사용자를 위한 로그인 기능을 제공합니다.
+    - API Gateway 및 Application Load Balancer와 통합할 수 있습니다.
+  - Cognito Identity Pools (Federated Identity)
+    - 사용자에게 AWS 자격증명을 제공하여 AWS 리소스에 직접 액세스할 수 있도록 합니다.
+    - Cognito User Pools와 신원 제공자로서 통합할 수 있습니다.
+  - Cognito vs IAM
+    - "수백 명의 사용자", "모바일 사용자", "SAML을 사용한 인증"과 같은 경우에 사용합니다.
+  - Cognito User Pools (CUP) – User Features
+    - Cognito User Pools (CUP)는 웹 및 모바일 앱을 위한 사용자의 서버리스 데이터베이스를 생성하는 데 사용됩니다. CUP의 사용자 기능에는 다음이 포함됩니다
+    - 간편한 로그인: 사용자 이름(또는 이메일) 및 비밀번호 조합으로 로그인합니다.
+    - 비밀번호 재설정: 사용자가 비밀번호를 재설정할 수 있도록 합니다.
+    - 이메일 및 전화번호 확인: 사용자의 이메일 또는 전화번호를 확인하여 신원을 확인합니다.
+    - 다중 요소 인증 (MFA): 여러 인증 요소를 사용하여 보안을 강화합니다.
+    - 연합된 신원: Facebook, Google, SAML 등의 외부 서비스에서 사용자를 연동하여 인증할 수 있습니다.
+  - Cognito Identity Pools (Federated Identities) 
+    - "사용자"에게 일시적인 AWS 자격 증명을 제공하여 신원을 얻을 수 있도록합니다. 
+    - 사용자는 Cognito User Pools, 타사 로그인 등을 통해 신원을 얻을 수 있습니다. 
+    - 그런 다음 사용자는 직접 AWS 서비스에 액세스하거나 API Gateway를 통해 액세스할 수 있습니다. 
+    - 자격 증명에 적용되는 IAM 정책은 Cognito에서 정의됩니다. 
+    - 사용자 ID에 따라 세밀한 제어를 위해 사용자 정의할 수 있습니다. 인증된 사용자와 게스트 사용자를 위한 기본 IAM 역할이 있습니다.
+
+# Serverless Architectures
+- 모바일 애플리케이션
+  - 서버리스 REST API: HTTPS, API Gateway, Lambda, DynamoDB
+  - Cognito를 사용하여 STS를 통해 S3 버킷에 액세스하기 위한 제한된 정책으로 일시적인 자격 증명을 생성합니다. 앱 사용자는 이를 통해 직접 AWS 리소스에 액세스할 수 있습니다. 이러한 패턴은 DynamoDB, Lambda 등에도 적용할 수 있습니다.
+  - DAX를 사용하여 DynamoDB의 읽기 작업 캐싱
+  - API Gateway 수준에서 REST 요청 캐싱
+  - Cognito, STS를 사용한 인증 및 권한 부여를 위한 보안
+- 서버리스 웹사이트
+  - 우리는 CloudFront와 S3를 사용하여 정적 콘텐츠를 배포하는 것을 보았습니다.
+  - REST API는 서버리스이므로 공개적인 사용자를 위해 Cognito가 필요하지 않았습니다.
+  - 우리는 전역적으로 데이터를 제공하기 위해 Global DynamoDB 테이블을 활용했습니다.(Aurora Global Database를 사용할 수도 있었습니다.)
+  - 우리는 DynamoDB 스트림을 활성화하여 Lambda 함수를 트리거했습니다.
+  - Lambda 함수에는 SES를 사용할 수 있는 IAM 역할이 있었습니다.
+  - SES (Simple Email Service)를 사용하여 서버리스 방식으로 이메일을 보냈습니다.
+  - S3는 SQS/SNS/Lambda를 트리거하여 이벤트를 알릴 수 있습니다.
+- Micro Services architecture
+  - 각각의 마이크로서비스를 자유롭게 설계할 수 있습니다.
+  - 동기 패턴: API Gateway, 로드 밸런서
+  - 비동기 패턴: SQS, Kinesis, SNS, Lambda 트리거 (S3)
+  - 마이크로서비스와 관련된 도전 과제
+    - 새로운 마이크로서비스를 만드는 데 반복적인 오버헤드
+    - 서버 밀도/활용도 최적화 문제
+    - 동시에 여러 버전의 여러 마이크로서비스를 실행하는 복잡성
+    - 여러 개별 서비스와의 통합을 위한 클라이언트 측 코드 요구 사항의 증가
+  - 일부 도전 과제는 서버리스 패턴으로 해결될 수 있습니다.
+    - API Gateway, Lambda는 자동으로 스케일링되며 사용량에 따라 비용을 지불합니다.
+    - API를 쉽게 복제하고 환경을 재현할 수 있습니다.
+    - API Gateway를 통해 Swagger 통합을 통해 생성된 클라이언트 SDK를 사용할 수 있습니다.
+- CloudFront
+  - CloudFront를 사용하면 기존 아키텍처를 변경하지 않고도 소프트웨어 업데이트 파일의 전송 성능을 개선하고 EC2 인스턴스의 부하를 줄이며 비용을 절감할 수 있습니다. 
+  - CloudFront의 서버리스 기능을 활용하여 기존 애플리케이션을 더 확장 가능하고 비용 효율적인 형태로 개선할 수 있습니다
