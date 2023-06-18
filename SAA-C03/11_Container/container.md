@@ -1,0 +1,131 @@
+# AWS Container
+- Docker
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/6473f209-3303-4d51-b78b-419379b26685)
+  - Docker는 앱을 배포하기 위한 소프트웨어 개발 플랫폼입니다. 
+  - 앱은 어떤 운영 체제에서든 실행할 수 있는 컨테이너에 패키지화됩니다. 
+    - 앱은 실행되는 위치에 관계없이 동일하게 작동합니다. 
+    - 어떤 기계에서든 실행할 수 있으며 호환성 문제가 없습니다. 
+    - 예측 가능한 동작, 더 적은 작업, 유지 및 배포가 더 쉽습니다. 
+    - Docker는 어떤 언어, 어떤 운영 체제, 어떤 기술과도 호환됩니다. 
+  - 마이크로서비스 아키텍처, 온프레미스에서 AWS 클라우드로 앱 이동 등 다양한 사용 사례에 사용됩니다.
+  - Docker 이미지는 Docker 저장소에 저장됩니다.
+  - Docker Hub (https://hub.docker.com)
+  - 공개 저장소
+    - 다양한 기술이나 운영 체제에 대한 기본 이미지를 찾을 수 있습니다. (예: Ubuntu, MySQL 등)
+  - Amazon ECR (Amazon Elastic Container Registry)
+    - 개인 저장소
+    - 공개 저장소도 있습니다. (Amazon ECR Public Gallery https://gallery.ecr.aws)
+  - AWS에서의 Docker 컨테이너 관리
+    - Amazon Elastic Container Service (Amazon ECS)
+      - Amazon의 독자적인 컨테이너 플랫폼
+    - Amazon Elastic Kubernetes Service (Amazon EKS)
+      - Amazon의 관리형 Kubernetes (오픈 소스)
+    - AWS Fargate
+      - Amazon의 독자적인 서버리스 컨테이너 플랫폼
+      - ECS 및 EKS와 함께 작동합니다.
+    - Amazon ECR
+      - 컨테이너 이미지 저장소
+
+# ECS
+- Amazon ECS - EC2 Launch Type
+  - ECS = Elastic Container Service
+  - AWS에서 Docker 컨테이너 시작 = ECS 클러스터에서 ECS 태스크 시작
+  - EC2 시작 유형: 인프라 (EC2 인스턴스)를 프로비저닝하고 유지해야 함
+  - 각 EC2 인스턴스는 ECS 에이전트를 실행하여 ECS 클러스터에 등록해야 함
+  - AWS가 컨테이너를 시작하고 중지하는 작업을 처리함
+- Amazon ECS - Fargate Launch Type
+  - AWS에서 Docker 컨테이너 시작
+  - 인프라를 프로비저닝하지 않음 (관리할 EC2 인스턴스 없음)
+  - 모두 서버리스!
+  - 태스크 정의만 생성하면 됨
+  - 필요한 CPU 및 RAM에 기반하여 AWS가 ECS 태스크를 실행함
+  - 확장하려면 태스크 수를 증가시키기만 하면 됨. 간단하게 - 더 이상 EC2 인스턴스 관리가 필요하지 않음
+- ECS에 대한 IAM 역할
+  - EC2 인스턴스 프로파일 (EC2 Launch Type만 해당)
+    - ECS 에이전트에서 사용됨
+    - ECS 서비스에 API 호출 수행
+    - 컨테이너 로그를 CloudWatch Logs로 전송
+    - ECR에서 Docker 이미지를 가져옴
+    - Secrets Manager 또는 SSM Parameter Store에서 민감한 데이터 참조
+  - ECS 태스크 역할
+    - 각 태스크에 특정 역할을 할당할 수 있음
+    - 실행 중인 서로 다른 ECS 서비스에 대해 다른 역할 사용 가능
+    - 태스크 역할은 태스크 정의에서 정의함
+- 로드 밸런서 통합
+  - 대부분의 사용 사례에 대해 Application Load Balancer가 지원되며 작동합니다.
+  - 고 처리량 / 고 성능 사용 사례나 AWS Private Link와 연동하기 위해서만 Network Load Balancer가 권장됩니다.
+  - Elastic Load Balancer는 지원되지만 권장되지 않습니다. (고급 기능이 없으며 Fargate에는 지원되지 않음)
+- 데이터 볼륨 (EFS)
+  - EFS 파일 시스템을 ECS 작업에 마운트합니다.
+  - EC2 및 Fargate 런치 유형 모두에서 작동합니다.
+  - 어떤 AZ에서 실행 중인 작업은 동일한 EFS 파일 시스템의 데이터를 공유합니다.
+  - Fargate + EFS = 서버리스
+  - 사용 사례: 컨테이너에 대한 지속적인 멀티-AZ 공유 스토리지
+  - Amazon S3는 파일 시스템으로 마운트할 수 없습니다.
+- ECS 서비스 자동 스케일링
+  - 자동으로 원하는 ECS 작업 수를 증가/감소시킵니다.
+  - Amazon ECS Auto Scaling은 AWS Application Auto Scaling을 사용합니다.
+    - ECS 서비스 평균 CPU 사용률
+    - ECS 서비스 평균 메모리 사용률 - RAM에 따라 스케일 조정
+    - ALB 타겟당 요청 수 - ALB에서 제공되는 메트릭
+  - 타겟 추적 - 특정 CloudWatch 메트릭에 대한 타겟 값을 기준으로 스케일 조정
+  - 단계별 스케일링 - 지정된 CloudWatch 알람에 기준으로 스케일 조정
+  - 예약된 스케일링 - 지정된 날짜/시간에 기준으로 스케일 조정 (예측 가능한 변경 사항)
+  - ECS 서비스 자동 스케일링 (태스크 수준) ≠ EC2 Auto Scaling (EC2 인스턴스 수준)
+  - Fargate Auto Scaling은 설정이 훨씬 쉽습니다 (서버리스이기 때문입니다).
+- EC2 인스턴스 자동 스케일링
+  - ECS 서비스 스케일링에 기반된 EC2 인스턴스를 추가하여 처리합니다.
+  - 자동 스케일링 그룹 스케일링
+    - CPU 사용률에 따라 ASG를 스케일링합니다.
+    - 시간이 지남에 따라 EC2 인스턴스를 추가합니다.
+  - ECS 클러스터 용량 공급자
+    - ECS 작업을 위한 인프라를 자동으로 프로비저닝하고 확장하는 데 사용됩니다.
+    - 용량 공급자는 자동 스케일링 그룹과 함께 사용됩니다.
+    - 용량이 부족할 때(EC2 인스턴스의 CPU, RAM 등) EC2 인스턴스를 추가합니다.
+
+# Amazon ECR
+- ECR (Elastic Container Registry) = 탄력적 컨테이너 레지스트리
+- Docker 이미지를 AWS에서 저장하고 관리합니다.
+- 개인 및 공용 레포지토리 (Amazon ECR Public Gallery https://gallery.ecr.aws)
+- Amazon S3를 기반으로 ECS와 완전히 통합됩니다.
+- IAM을 통해 액세스가 제어됩니다. (권한 오류 시 => 정책)
+- 이미지 취약성 검사, 버전 관리, 이미지 태그, 이미지 수명 주기 등을 지원합니다.
+
+# Amazon EKS
+- Amazon EKS (Amazon Elastic Kubernetes Service)는 AWS에서 관리되는 Kubernetes 클러스터를 시작하는 방법입니다.
+- Kubernetes는 컨테이너화된 (일반적으로 Docker를 사용하는) 애플리케이션의 자동 배포, 확장 및 관리를 위한 오픈 소스 시스템입니다.
+- EKS는 ECS와 비슷한 목표를 가진 대안이며, 다른 API를 사용합니다.
+- EKS는 워커 노드를 배포하려면 EC2를 지원하고, 서버리스 컨테이너를 배포하려면 Fargate를 지원합니다.
+- 사용 사례: 회사가 이미 온프레미스나 다른 클라우드에서 Kubernetes를 사용하고 있으며, Kubernetes를 사용하여 AWS로 마이그레이션하려는 경우입니다.
+- Kubernetes는 클라우드에 중립적인 기술로 어떤 클라우드에서든 사용할 수 있습니다 (Azure, GCP 등).
+- 여러 지역에서는 각 지역마다 하나의 EKS 클러스터를 배포합니다.
+- CloudWatch Container Insights를 사용하여 로그와 메트릭을 수집할 수 있습니다.
+- 노드 유형
+  - 관리형 노드 그룹 (Managed Node Groups)
+    - EKS가 노드(EC2 인스턴스)를 생성하고 관리합니다.
+    - 노드는 EKS가 관리하는 ASG(Auto Scaling Group)의 일부입니다.
+    - 온디맨드 또는 스팟 인스턴스를 지원합니다.
+  - 자체 관리 노드 (Self-Managed Nodes)
+    - 사용자가 생성하고 EKS 클러스터에 등록한 노드로, ASG에 의해 관리됩니다.
+    - Amazon EKS 최적화된 AMI를 사용할 수 있습니다.
+    - 온디맨드 또는 스팟 인스턴스를 지원합니다.
+  - AWS Fargate
+    - 유지 관리가 필요하지 않으며, 노드를 직접 관리하지 않습니다.
+- 데이터 볼륨 (Data Volumes)
+  - EKS 클러스터에서 StorageClass 매니페스트를 지정해야 합니다.
+  - Container Storage Interface (CSI) 호환 드라이버를 활용합니다.
+  - 다음과 같은 지원이 있습니다
+    - Amazon EBS
+    - Amazon EFS (Fargate와 함께 사용 가능)
+    - Amazon FSx for Lustre
+    - Amazon FSx for NetApp ONTAP
+
+# AWS App Runner (AWS 앱 러너)
+- 웹 애플리케이션과 API를 대규모로 배포하기 쉽게 만들어주는 완전히 관리되는 서비스입니다.
+- 인프라 경험이 필요하지 않습니다.
+- 소스 코드나 컨테이너 이미지로 시작할 수 있습니다.
+- 웹 앱을 자동으로 빌드하고 배포합니다.
+- 자동 스케일링, 고가용성, 로드 밸런서, 암호화 등을 제공합니다.
+- VPC 액세스 지원
+- 데이터베이스, 캐시, 메시지 큐 서비스에 연결할 수 있습니다.
+- 웹 앱, API, 마이크로서비스, 신속한 프로덕션 배포 등에 사용 가능합니다.
