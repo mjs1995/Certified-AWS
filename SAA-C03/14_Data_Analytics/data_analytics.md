@@ -1,0 +1,176 @@
+# Data Analytics
+- Amazon Athena
+  - Amazon Athena는 Amazon S3에 저장된 데이터를 분석하기 위한 서버리스 쿼리 서비스입니다.
+  - 표준 SQL 언어를 사용하여 파일을 쿼리합니다 (Presto 기반)
+  - CSV, JSON, ORC, Avro, Parquet 형식을 지원합니다.
+  - 가격: 스캔된 데이터당 1TB당 $5.00입니다.
+  - 주로 Amazon Quicksight와 함께 사용하여 보고서 및 대시보드를 작성합니다.
+  - 사용 사례: 비즈니스 인텔리전스, 분석, 보고서 작성, VPC Flow Logs, ELB Logs, CloudTrail 트레일 등의 데이터 분석 및 쿼리.
+  - 시험 팁: S3에 저장된 데이터를 서버리스 SQL로 분석하기 위해 Athena를 사용합니다.
+  - 성능 향상
+    - 비용 절감을 위해 열 지향 데이터를 사용하세요 (스캔량 감소)
+    - Apache Parquet 또는 ORC를 권장합니다.
+    - 큰 성능 향상을 기대할 수 있습니다.
+    - 데이터를 Parquet 또는 ORC로 변환하기 위해 Glue를 사용하세요.
+    - 작은 검색을 위해 데이터를 압축하세요 (bzip2, gzip, lz4, snappy, zlip, zstd 등).
+    - 가상 컬럼에서 쉬운 쿼리를 위해 S3에서 데이터셋을 파티션하세요.
+    - 예: s3://athena-examples/flight/parquet/year=1991/month=1/day=1/
+    - 오버헤드를 최소화하기 위해 큰 파일 (> 128MB)을 사용하세요.
+  - 연합 쿼리
+    - 관계형, 비관계형, 객체 및 사용자 정의 데이터 소스에 저장된 데이터를 대상으로 SQL 쿼리를 실행할 수 있게 해줍니다 (AWS 또는 온프레미스).
+    - 연합 쿼리를 실행하기 위해 AWS Lambda에서 실행되는 데이터 소스 커넥터를 사용합니다 (예: CloudWatch Logs, DynamoDB, RDS 등).
+    - 결과를 Amazon S3에 저장합니다.
+- Redshift
+  - Redshift는 PostgreSQL을 기반으로하지만 OLTP에는 사용되지 않습니다.
+  - OLAP(Online Analytical Processing) - 분석 및 데이터 웨어하우징에 사용됩니다.
+  - 다른 데이터 웨어하우스보다 10배 빠른 성능, PB 단위의 데이터 확장 가능
+  - 데이터의 열 기반 저장 (행 기반이 아닌) 및 병렬 쿼리 엔진
+  - 프로비저닝 된 인스턴스에 따라 과금
+  - 쿼리 수행을 위한 SQL 인터페이스 제공
+  - Amazon Quicksight 또는 Tableau와 같은 BI 도구와 통합 가능
+  - Athena와 비교할 때: 인덱스 덕분에 더 빠른 쿼리 / 조인 / 집계 가능
+  - Redshift Cluster
+    - 리더 노드(Leader Node): 쿼리 계획 및 결과 집계에 사용됩니다.
+    - 컴퓨팅 노드(Compute Node): 쿼리 수행 및 결과를 리더 노드로 전송하는 데 사용됩니다.
+    - 사전에 노드 크기를 프로비저닝합니다.
+    - 비용 절감을 위해 예약된 인스턴스(Reserved Instances)를 사용할 수 있습니다.
+  - Snapshots & DR
+    - Redshift는 일부 클러스터에 대해 "다중 가용 영역(Multi-AZ)" 모드를 갖고 있습니다.
+    - 스냅샷은 클러스터의 시점별 백업으로, 내부적으로 S3에 저장됩니다.
+    - 스냅샷은 증분식으로 저장되며(변경된 부분만 저장), 새로운 클러스터로 스냅샷을 복원할 수 있습니다.
+    - 자동화된 스냅샷은 매 8시간, 매 5GB 또는 일정에 따라 생성됩니다. 보존 기간은 1일부터 35일까지 설정할 수 있습니다.
+    - 수동으로 생성한 스냅샷은 삭제할 때까지 보존됩니다.
+    - Amazon Redshift를 구성하여 클러스터의 자동화된 또는 수동 스냅샷을 다른 AWS 리전으로 자동 복사할 수 있습니다.
+  - Spectrum
+    - 로딩하지 않고 이미 S3에 있는 데이터를 쿼리합니다.
+    - Redshift 클러스터가 있어야 쿼리를 시작할 수 있습니다.
+    - 그런 다음 쿼리는 수천 개의 Redshift Spectrum 노드로 제출됩니다.
+- Amazon OpenSearch Service
+  - Amazon OpenSearch는 Amazon ElasticSearch의 후속 제품입니다.
+  - DynamoDB에서는 쿼리가 기본 키 또는 인덱스로만 존재합니다.
+  - OpenSearch에서는 어떤 필드든지 검색할 수 있으며, 일부 일치도 가능합니다.
+  - 일반적으로 OpenSearch를 다른 데이터베이스의 보완으로 사용합니다.
+  - 두 가지 모드가 있습니다: 관리형 클러스터 또는 서버리스 클러스터.
+  - 원래 SQL을 지원하지 않지만 플러그인을 통해 활성화할 수 있습니다.
+  - Kinesis Data Firehose, AWS IoT, CloudWatch Logs에서 데이터를 적재할 수 있습니다.
+  - Cognito 및 IAM을 통한 보안, KMS 암호화, TLS를 지원합니다.
+  - OpenSearch 대시보드(시각화)가 함께 제공됩니다.
+- EMR
+  - Amazon EMR (Elastic MapReduce)는 다음과 같은 특징을 가지고 있습니다
+  - EMR은 방대한 양의 데이터를 분석하고 처리하기 위해 Hadoop 클러스터를 생성하는 데 도움을 줍니다.
+  - 클러스터는 수백 개의 EC2 인스턴스로 구성될 수 있습니다.
+  - EMR은 Apache Spark, HBase, Presto, Flink 등과 함께 제공됩니다.
+  - EMR은 모든 프로비저닝과 구성을 처리합니다.
+  - 자동 스케일링 및 Spot 인스턴스와 통합되어 있습니다.
+  - 데이터 처리, 머신러닝, 웹 인덱싱, 대규모 데이터 등의 다양한 용도로 사용될 수 있습니다.
+  - Node types & purchasing
+    - 마스터 노드: 클러스터를 관리하고 조정하며 상태를 관리합니다. 오랫동안 실행됩니다.
+    - 코어 노드: 작업을 실행하고 데이터를 저장합니다. 오랫동안 실행됩니다.
+    - 태스크 노드 (선택적): 작업 실행에만 사용됩니다. 일반적으로 Spot 인스턴스를 사용합니다.
+    - 구매 옵션
+      - 온디맨드: 신뢰성이 높고 예측 가능하며 종료되지 않습니다.
+      - 예약 (최소 1년): 비용 절감 효과가 있으며 사용 가능한 경우 EMR이 자동으로 활용합니다.
+      - Spot 인스턴스: 가격이 저렴하며 종료될 수 있으며 신뢰성이 낮습니다.
+    - 클러스터는 장기간 실행되거나 일시적인 (임시) 클러스터로 구성될 수 있습니다.
+- Amazon QuickSight
+  - Amazon QuickSight는 서버리스 기계 학습 기반 비즈니스 인텔리전스 서비스로, 상호작용 가능한 대시보드를 생성할 수 있습니다.
+  - 빠르고 자동으로 확장 가능하며 세션 단위의 가격 책정을 제공합니다.
+  - 다음과 같은 사용 사례를 가지고 있습니다
+    - 비즈니스 분석
+    - 시각화 구축
+    - 적극적인 분석 수행
+    - 데이터를 활용하여 비즈니스 인사이트 얻기
+  - RDS, Aurora, Athena, Redshift, S3와 통합되어 있습니다.
+  - 데이터를 QuickSight에 가져온 경우 SPICE 엔진을 사용하여 인메모리 계산이 가능합니다.
+  - 엔터프라이즈 에디션: Column-Level 보안 (CLS) 설정 가능
+  - 대시보드 및 분석
+    - 사용자 (표준 버전) 및 그룹 (엔터프라이즈 버전) 정의. 이러한 사용자 및 그룹은 QuickSight 내에서만 존재하며 IAM과는 별개입니다!
+    - 대시보드는
+      - 공유할 수 있는 분석의 읽기 전용 스냅샷입니다.
+      - 분석의 구성 (필터링, 매개 변수, 제어, 정렬)을 유지합니다.
+    - 분석 또는 대시보드를 사용자 또는 그룹과 공유할 수 있습니다.
+    - 대시보드를 공유하려면 먼저 게시해야 합니다.
+    - 대시보드를 보는 사용자는 해당 대시보드의 기반이 되는 데이터도 볼 수 있습니다.
+- AWS Glue
+  - 관리형 추출, 변환 및 로드 (ETL) 서비스
+  - 분석을 위해 데이터를 준비하고 변환하는 데 유용합니다.
+  - 완전한 서버리스 서비스입니다.
+  - Glue Data Catalog: catalog of datasets
+    - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/91f14c67-aec7-498c-bfa7-b1a1a9bca8d1)
+  - high-level
+    - Glue Job Bookmarks: 과거 데이터 재처리 방지
+    - Glue Elastic Views
+      - SQL을 사용하여 여러 데이터 저장소의 데이터를 결합하고 복제합니다.
+      - 사용자 지정 코드 없이 Glue가 소스 데이터의 변경 사항을 모니터링하며 서버리스로 작동합니다.
+      - "가상 테이블" (물리적 뷰)을 활용합니다.
+    - Glue DataBrew: 사전에 구축된 변환을 사용하여 데이터를 정리하고 정규화합니다.
+    - Glue Studio: Glue에서 ETL 작업을 생성, 실행 및 모니터링하기 위한 새로운 GUI 도구입니다.
+    - Glue Streaming ETL (Apache Spark Structured Streaming 기반): Kinesis Data Streaming, Kafka, MSK (관리형 Kafka)와 호환됩니다.
+- AWS Lake Formation
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/fdac014f-cf64-49c0-87af-f125b416bcfa)
+  - 데이터 레이크(Data Lake)는 분석 목적으로 모든 데이터를 중앙에 보관하는 곳입니다.
+  - 데이터 레이크를 간편하게 설정할 수 있는 완전관리형 서비스로, 몇 일 안에 구축할 수 있습니다.
+  - 데이터를 검색하고 정제하며 변환하여 데이터 레이크에 적재합니다.
+  - 다양한 복잡한 수동 단계(데이터 수집, 정제, 이동, 카탈로그화 등)를 자동화하며, ML Transforms를 사용하여 중복을 제거합니다.
+  - 데이터 레이크에서 구조화된 데이터와 비구조화된 데이터를 조합합니다.
+  - 기본 제공 데이터 소스 블루프린트: S3, RDS, 관계형 및 NoSQL 데이터베이스 등
+  - 응용 프로그램에 대한 세밀한 접근 제어(행 및 열 수준) 제공
+  - AWS Glue 기반으로 구축되었습니다.
+  - 액세스 제어 및 열 및 행 수준 보안이 있어서 자주 사용됨 
+- Kinesis Data Analytics for SQL application
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/7b194e6a-f21b-4c9d-b915-921dd757d3dd)
+  - Kinesis Analytics는 SQL을 사용하여 Kinesis Data Streams 및 Firehose에서 실시간 분석을 수행합니다.
+  - Amazon S3의 참조 데이터를 추가하여 스트리밍 데이터를 보강합니다.
+  - 완전 관리형 서비스이므로 서버를 프로비저닝할 필요가 없습니다.
+  - 자동 확장이 이루어지며, 실제 사용량에 대해서만 지불합니다.
+  - 출력
+    - Kinesis Data Streams: 실시간 분석 쿼리 결과를 스트림으로 생성합니다.
+    - Kinesis Data Firehose: 분석 쿼리 결과를 대상으로 전송합니다.
+  - 사용 사례
+    - 시계열 분석
+    - 실시간 대시보드
+    - 실시간 지표
+- Kinesis Data Analytics for Apache Flink
+  - Flink (Java, Scala 또는 SQL)을 사용하여 스트리밍 데이터를 처리하고 분석합니다.
+  - AWS에서 관리되는 클러스터에서 Apache Flink 애플리케이션을 실행할 수 있습니다.
+    - 컴퓨팅 리소스 프로비저닝, 병렬 계산, 자동 확장이 지원됩니다.
+    - 애플리케이션 백업은 체크포인트 및 스냅샷으로 구현됩니다.
+    - Apache Flink 프로그래밍 기능을 자유롭게 사용할 수 있습니다.
+    - Flink은 Firehose에서 직접 읽지 않습니다 (SQL에는 Kinesis Analytics를 사용하십시오).
+- Amazon Managed Streaming for Apache Kafka (Amazon MSK)
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/d5b2cc38-773b-44d9-bc45-52a6b59b1c3a)
+  - Amazon Kinesis 대안
+  - AWS에서 완전히 관리되는 Apache Kafka
+    - 클러스터를 생성, 업데이트, 삭제할 수 있습니다.
+    - MSK는 Kafka 브로커 노드와 Zookeeper 노드를 자동으로 생성하고 관리합니다.
+    - VPC 내에서 MSK 클러스터를 배포하고 HA를 위해 다중 가용 영역 (최대 3개)을 지원합니다.
+    - 일반적인 Apache Kafka 장애로부터 자동으로 복구합니다.
+    - 데이터는 원하는 만큼 오랫동안 EBS 볼륨에 저장됩니다.
+  - MSK Serverless
+    - 용량을 관리하지 않고 MSK에서 Apache Kafka를 실행합니다.
+    - MSK는 자동으로 리소스를 프로비저닝하고 컴퓨팅 및 스토리지를 확장합니다.
+  - Kinesis Data Streams vs. Amazon MSK
+    - Kinesis Data Streams
+      - 1MB의 메시지 크기 제한
+      - 샤드를 사용한 데이터 스트림
+      - 샤드 분할 및 병합
+      - 전송 중에 TLS 암호화
+      - 정지 상태에서의 KMS 암호화
+    - Amazon MSK
+      - 1MB가 기본값이며, 더 높은 값(예: 10MB)으로 구성 가능
+      - 파티션을 가진 Kafka 토픽
+      - 토픽에는 파티션만 추가할 수 있음
+      - PLAINTEXT 또는 TLS 전송 중 암호화
+      - 정지 상태에서의 KMS 암호화
+  - Amazon MSK Consumers
+    - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/abc4d7fe-d350-463f-8298-de3e8f88c8d7)
+- Big Data Ingestion Pipeline
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/ff16c897-cfa9-4332-8b89-211c6e9b8537)
+  - IoT Core를 사용하여 IoT 장치에서 데이터를 수집할 수 있습니다.
+  - Kinesis는 실시간 데이터 수집에 적합합니다.
+  - Firehose는 데이터를 거의 실시간으로 S3로 전달하는 데 도움이 됩니다 (1분).
+  - Lambda는 Firehose에 데이터 변환을 지원할 수 있습니다.
+  - Amazon S3는 SQS로 알림을 트리거할 수 있습니다.
+  - Lambda는 SQS에 구독할 수 있습니다 (S3를 Lambda에 연결할 수 있었을 것입니다).
+  - Athena는 서버리스 SQL 서비스이며 결과는 S3에 저장됩니다.
+  - 보고서 버킷에는 분석된 데이터가 포함되어 있으며 AWS QuickSight, Redshift 등과 같은 보고 도구에서 사용할 수 있습니다.
