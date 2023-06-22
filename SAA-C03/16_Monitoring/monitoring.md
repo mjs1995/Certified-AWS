@@ -1,0 +1,247 @@
+# AWS Monitoring, Audit and Performance
+- Amazon CloudWatch Metrics
+  - CloudWatch는 AWS의 모든 서비스에 대한 지표를 제공합니다.
+  - 지표(Metric)는 모니터링할 변수입니다(CPUUtilization, NetworkIn 등).
+  - 지표는 네임스페이스(Namespace)에 속합니다.
+  - 디멘션(Dimension)은 지표의 속성입니다(인스턴스 ID, 환경 등).
+  - 지표당 최대 30개의 디멘션을 가질 수 있습니다.
+  - 지표에는 타임스탬프가 있습니다.
+  - CloudWatch 대시보드에서 지표를 생성할 수 있습니다.
+  - CloudWatch 사용자 정의 지표를 생성할 수도 있습니다(예: RAM).
+  - CloudWatch Metric Streams
+    - loudWatch 지표를 지정한 대상으로 지속적으로 스트리밍합니다. 스트리밍은 거의 실시간으로 이루어지며 지연 시간이 매우 낮습니다.
+      - Amazon Kinesis Data Firehose를 통해 지표를 스트리밍할 수 있으며, 이후 해당 대상으로 전달됩니다.
+      - Datadog, Dynatrace, New Relic, Splunk, Sumo Logic과 같은 3rd party 서비스 제공업체를 선택하여 사용할 수도 있습니다.
+    - 원하는 지표만 스트리밍하도록 필터링하는 옵션이 제공됩니다.
+- CloudWatch Logs
+  - 로그 그룹(Log Groups): 일반적으로 응용 프로그램을 나타내는 임의의 이름입니다.
+  - 로그 스트림(Log Streams): 응용 프로그램 내의 인스턴스, 로그 파일, 컨테이너 등을 나타냅니다.
+  - 로그의 유효 기간 정책(만료되지 않음, 30일 등)을 정의할 수 있습니다.
+  - CloudWatch Logs는 다음 대상으로 로그를 전송할 수 있습니다
+    - Amazon S3 (내보내기)
+    - Kinesis Data Streams
+    - Kinesis Data Firehose
+    - AWS Lambda
+    - OpenSearch
+  - CloudWatch Logs는 다양한 소스로부터 로그를 수집할 수 있습니다.
+    - SDK: AWS SDK를 사용하여 로그를 CloudWatch Logs로 전송할 수 있습니다.
+    - CloudWatch Logs Agent: 로그 에이전트를 사용하여 로그를 수집하고 전송할 수 있습니다.
+    - CloudWatch Unified Agent: 로그를 수집하고 전송하기 위한 통합 로그 에이전트입니다.
+    - Elastic Beanstalk: 응용 프로그램에서 생성되는 로그를 수집할 수 있습니다.
+    - ECS (Elastic Container Service): 컨테이너에서 생성되는 로그를 수집할 수 있습니다.
+    - AWS Lambda: Lambda 함수의 로그를 수집할 수 있습니다.
+    - VPC Flow Logs: VPC(Virtual Private Cloud)에서 발생하는 트래픽 로그를 수집할 수 있습니다.
+    - API Gateway: API Gateway에서 생성되는 로그를 수집할 수 있습니다.
+    - CloudTrail: CloudTrail에서 생성된 로그를 특정 필터를 기반으로 수집할 수 있습니다.
+    - Route53: DNS 쿼리 로그를 수집할 수 있습니다.
+  - CloudWatch Logs Metric Filter & Insights
+    - CloudWatch Logs는 필터 표현식을 사용하여 로그를 검색할 수 있습니다. 
+      - 예를 들어, 로그 내에서 특정 IP를 찾거나 로그에서 "ERROR"의 발생 횟수를 계산할 수 있습니다.
+    - 메트릭 필터는 CloudWatch 알람을 트리거하는 데 사용할 수 있습니다. 
+    - CloudWatch Logs Insights는 로그를 쿼리하고, 해당 쿼리를 CloudWatch 대시보드에 추가할 수 있는 기능을 제공합니다. 이를 통해 로그 데이터를 실시간으로 검색하고 분석할 수 있습니다.
+  - S3 Export
+    - CloudWatch Logs 데이터는 내보내기 기능을 통해 S3로 전송될 때 최대 12시간까지 걸릴 수 있습니다. 
+    - 이를 위해 CreateExportTask API 호출을 사용합니다. 
+    - 하지만 이 방법은 실시간이나 거의 실시간으로 데이터를 이용하기에는 적합하지 않습니다. 
+    - 대신 Logs Subscriptions을 사용하여 실시간 또는 거의 실시간으로 로그 데이터를 이용할 수 있습니다. 
+- EC2를 위한 CloudWatch Logs
+  - 기본적으로 EC2 인스턴스의 로그는 CloudWatch로 전송되지 않습니다.
+  - 원하는 로그 파일을 CloudWatch로 전송하려면 EC2에서 CloudWatch 에이전트를 실행해야 합니다.
+  - IAM 권한이 올바르게 설정되어 있는지 확인하세요.
+  - CloudWatch 로그 에이전트는 온프레미스 환경에서도 설정할 수 있습니다.
+- CloudWatch Logs Agent 및 Unified Agent
+  - 가상 서버(EC2 인스턴스, 온프레미스 서버 등)용
+  - CloudWatch Logs Agent
+    - 이전 버전의 에이전트
+    - CloudWatch Logs로만 전송할 수 있음
+  - CloudWatch Unified Agent
+    - RAM, 프로세스 등과 같은 추가 시스템 수준의 지표 수집
+    - 로그를 CloudWatch Logs로 전송하기 위한 수집
+    - SSM Parameter Store를 사용한 중앙 집중식 구성
+  - 지표(Metrics)
+    - Linux 서버 또는 EC2 인스턴스에서 직접 수집됨
+    - CPU 지표 (활성, 게스트, 비활성, 시스템, 사용자, 스틸)
+    - 디스크 지표 (사용 가능, 사용 중, 전체), 디스크 IO (쓰기, 읽기, 바이트, IOPS)
+    - RAM 지표 (사용 가능, 비활성, 사용 중, 전체, 캐시)
+    - Netstat (TCP 및 UDP 연결 수, 넷 패킷, 바이트)
+    - 프로세스 지표 (전체, 종료, 차단, 대기, 실행, 슬립)
+    - 스왑 공간 (사용 가능, 사용 중, 사용 비율)
+    - 알림: EC2의 기본 지표 - 디스크, CPU, 네트워크 (상위 수준)
+- CloudWatch Alarms
+  - 알람은 모든 지표에 대해 알림을 트리거하는 데 사용됩니다.
+  - 다양한 옵션 (샘플링, %, 최대, 최소 등)
+  - 알람 상태
+    - OK
+    - INSUFFICIENT_DATA (데이터 부족)
+    - ALARM (경보)
+  - 주기
+    - 지표를 평가하는 데 사용되는 시간의 길이 (초 단위)
+    - 고해상도 사용자 정의 지표: 10초, 30초 또는 60초의 배수
+  - 타겟
+    - EC2 인스턴스를 중지, 종료, 재부팅 또는 복구
+    - Auto Scaling 작업 트리거
+    - SNS로 알림을 보내고 (SNS를 통해 다양한 작업 수행 가능)
+  – Composite Alarms
+    - CloudWatch 알람은 단일 메트릭에 대한 것입니다.
+    - 복합 알람은 여러 다른 알람의 상태를 모니터링합니다.
+    - AND 및 OR 조건을 사용합니다.
+    - 복잡한 복합 알람을 만들어 "알람 소음"을 줄이는 데 도움이 됩니다.
+  - EC2 Instance Recovery
+    - 상태 확인
+      - 인스턴스 상태 = EC2 가상 머신 확인
+      - 시스템 상태 = 기반 하드웨어 확인
+    - 복구: 동일한 프라이빗, 퍼블릭, 엘라스틱 IP, 메타데이터, 배치 그룹 유지
+  - 알아두면 좋은 사항
+    - CloudWatch Logs 메트릭 필터를 기반으로 알람을 생성할 수 있습니다.
+    - 알람과 알림을 테스트하려면 CLI를 사용하여 알람 상태를 "ALARM"으로 설정하십시오.
+    - aws cloudwatch set-alarm-state --alarm-name "myalarm" --state-value ALARM --state-reason "testing purposes"
+
+- Amazon EventBridge (이전에 CloudWatch Events로 알려짐)
+  - 스케줄: Cron 작업 (스케줄에 따른 스크립트 실행)
+  - 이벤트 패턴: 서비스가 특정 동작을 수행할 때 반응하기 위한 이벤트 규칙
+  - Lambda 함수를 트리거하거나 SQS/SNS 메시지를 전송할 수 있습니다.
+  - 다른 AWS 계정에서 리소스 기반 정책을 사용하여 이벤트 버스에 액세스할 수 있습니다.
+  - 이벤트 버스로 전송된 이벤트를 아카이브할 수 있습니다 (전체/필터).
+  - 아카이브된 이벤트를 재생할 수 있는 기능이 있습니다.
+  - 스키마 레지스트리
+    - EventBridge는 이벤트 버스의 이벤트를 분석하고 스키마를 추론할 수 있습니다.
+    - 스키마 레지스트리를 사용하면 응용 프로그램을 위한 코드를 생성할 수 있으며, 이 코드는 이벤트 버스의 데이터 구조를 미리 알 수 있습니다.
+    - 스키마는 버전 관리가 가능합니다.
+  - 리소스 기반 정책
+    - 특정 이벤트 버스의 권한을 관리합니다.
+    - 예시: 다른 AWS 계정이나 AWS 리전으로부터의 이벤트를 허용하거나 거부합니다.
+    - 사용 사례: AWS 조직의 모든 이벤트를 단일 AWS 계정이나 AWS 리전에서 집계합니다
+- CloudWatch Container Insights
+  - 컨테이너에서 메트릭 및 로그를 수집, 집계 및 요약하는 기능을 제공합니다.
+  - Amazon Elastic Container Service (Amazon ECS)
+  - Amazon Elastic Kubernetes Service (Amazon EKS)
+  - EC2 위에서 동작하는 Kubernetes 플랫폼
+  - Fargate (ECS 및 EKS 모두에 적용)
+  - Amazon EKS 및 Kubernetes에서는 CloudWatch Insights가 컨테이너를 탐지하기 위해 컨테이너화된 CloudWatch Agent의 버전을 사용합니다.
+- CloudWatch Lambda Insights
+  - AWS Lambda에서 실행되는 서버리스 애플리케이션의 모니터링 및 문제 해결 솔루션입니다.
+  - CPU 시간, 메모리, 디스크, 네트워크 등의 시스템 수준 메트릭을 수집, 집계 및 요약합니다.
+  - 콜드 스타트 및 Lambda 워커 종료와 같은 진단 정보를 수집, 집계 및 요약합니다.
+  - Lambda Insights는 Lambda Layer로 제공됩니다.
+- CloudWatch Contributor Insights
+  - 로그 데이터를 분석하고 기여자 데이터를 표시하는 시계열을 생성하는 기능입니다.
+    - 상위 N개의 기여자에 대한 메트릭을 확인할 수 있습니다.
+    - 고유한 기여자의 총 수와 그들의 사용량을 파악할 수 있습니다.
+  - 이를 통해 시스템 성능에 영향을 주는 주요 사용자 또는 요소를 파악할 수 있습니다.
+  - VPC, DNS 등의 AWS 생성 로그에 대해 작동합니다.
+  - 예를 들어, 나쁜 호스트를 찾거나 가장 많은 네트워크 사용자를 식별하거나 가장 많은 오류를 생성하는 URL을 찾을 수 있습니다.
+  - 규칙을 직접 작성하거나 AWS가 제공하는 샘플 규칙을 사용할 수 있습니다. CloudWatch Logs를 활용합니다.
+  - CloudWatch는 다른 AWS 서비스의 메트릭을 분석하는 데 사용할 수 있는 내장 규칙도 제공합니다.
+- CloudWatch Application Insights
+  - 모니터링된 애플리케이션의 잠재적인 문제를 보여주는 자동 대시보드를 제공하여 지속적인 문제를 격리하는 데 도움을 줍니다.
+  - 애플리케이션은 Java, .NET, Microsoft IIS 웹 서버, 데이터베이스 등의 선택된 기술을 사용하는 Amazon EC2 인스턴스에서 실행됩니다.
+  - 또한 Amazon EBS, RDS, ELB, ASG, Lambda, SQS, DynamoDB, S3 버킷, ECS, EKS, SNS, API Gateway와 같은 다른 AWS 리소스를 사용할 수 있습니다.
+  - SageMaker의 기술을 활용합니다.
+  - 애플리케이션의 상태를 더욱 상세히 파악하여 문제 해결 시간을 단축시킵니다.
+  - 결과와 경고는 Amazon EventBridge와 SSM OpsCenter로 전송됩니다.
+- CloudWatch Insights와 운영 가시성
+  - CloudWatch Container Insights
+    - ECS, EKS, EC2에서 실행되는 Kubernetes, Fargate를 위한 에이전트 필요
+    - 메트릭과 로그
+  - CloudWatch Lambda Insights
+    - 서버리스 애플리케이션을 문제 해결하기 위한 자세한 메트릭
+  - CloudWatch Contributors Insights
+    - CloudWatch Logs를 통해 "Top-N" 기여자 찾기
+  - CloudWatch Application Insights
+    - 애플리케이션 및 관련 AWS 서비스를 문제 해결하기 위한 자동 대시보드
+- AWS CloudTrail
+  - AWS 계정의 거버넌스, 컴플라이언스 및 감사 기능을 제공합니다.
+  - CloudTrail은 기본적으로 활성화되어 있습니다!
+  - AWS 계정 내에서 이벤트/API 호출의 이력을 다음을 통해 얻을 수 있습니다
+    - 콘솔
+    - SDK
+    - CLI
+    - AWS 서비스
+  - CloudTrail 로그를 CloudWatch Logs나 S3에 저장할 수 있습니다.
+  - 트레일은 모든 리전(기본값) 또는 단일 리전에 적용할 수 있습니다.
+  - AWS에서 리소스가 삭제된 경우, CloudTrail을 우선으로 조사하십시오!
+  - CloudTrail Events
+    - 관리 이벤트
+      - AWS 계정 내의 리소스에 수행되는 작업
+      - 예시
+        - 보안 구성 (IAM AttachRolePolicy)
+        - 데이터 라우팅 규칙 구성 (Amazon EC2 CreateSubnet)
+        - 로깅 설정 (AWS CloudTrail CreateTrail)
+      - 기본적으로 트레일은 관리 이벤트를 로깅하도록 구성됩니다.
+      - 읽기 이벤트(리소스를 수정하지 않는 이벤트)와 쓰기 이벤트(리소스를 수정할 수 있는 이벤트)를 분리할 수 있습니다.
+    - 데이터 이벤트
+      - 기본적으로 데이터 이벤트는 로깅되지 않습니다(높은 볼륨으로 인해).
+      - Amazon S3 객체 수준의 활동 (예: GetObject, DeleteObject, PutObject): 읽기 및 쓰기 이벤트를 분리할 수 있습니다.
+      - AWS Lambda 함수 실행 활동 (Invoke API)
+    - CloudTrail Insights 이벤트
+      - CloudTrail Insights를 활성화하여 계정에서 이상한 활동을 감지합니다
+        - 부정확한 리소스 프로비저닝
+        - 서비스 제한에 도달
+        - AWS IAM 작업의 급증
+        - 주기적인 유지 보수 활동의 간극
+      - CloudTrail Insights는 일반적인 관리 이벤트를 분석하여 기준선을 생성한 다음, 비정상적인 패턴을 감지하기 위해 지속적으로 쓰기 이벤트를 분석합니다.
+        - 이상 현상은 CloudTrail 콘솔에 표시됩니다.
+        - 이벤트는 Amazon S3로 전송됩니다.
+        - 자동화 요구 사항을 위해 EventBridge 이벤트가 생성됩니다.
+    - CloudTrail 이벤트 보존
+      - CloudTrail에서 이벤트는 90일 동안 보존됩니다.
+      - 이 기간을 초과하여 이벤트를 보존하려면 S3에 로그를 저장하고 Athena를 사용하십시오.
+- AWS Config
+  - AWS Config는 AWS 리소스의 준수 및 감사를 위해 도움을 줍니다.
+  - 구성 및 변경 사항을 시간별로 기록하는 데 도움이 됩니다.
+  - AWS Config로 해결할 수 있는 질문:
+    - 보안 그룹에 무제한 SSH 액세스가 있는지 확인할 수 있나요?
+    - 내 버킷에 공개 액세스가 있는지 확인할 수 있나요?
+    - 시간에 따라 ALB (Application Load Balancer) 구성이 어떻게 변경되었나요?
+  - 변경 사항에 대한 알림 (SNS 알림)을 받을 수 있습니다.
+  - AWS Config는 지역별 서비스입니다.
+  - 지역 및 계정 간에 집계할 수 있습니다.
+  - 구성 데이터를 S3에 저장하여 Athena로 분석할 수도 있습니다.
+  - Config Rules
+    - AWS Config 사용 시 관리형 구성 규칙 사용 가능 (75개 이상)
+    - 사용자 정의 구성 규칙을 만들 수도 있음 (AWS Lambda에서 정의해야 함)
+      - 예: 각 EBS 디스크가 gp2 유형인지 확인
+      - 예: 각 EC2 인스턴스가 t2.micro 유형인지 확인
+    - 규칙은 다음과 같이 평가/트리거될 수 있음
+      - 각 구성 변경 시
+      - 그리고/또는: 정기적인 시간 간격으로
+    - AWS Config Rules는 작업을 방지하지 않으며 (deny 없음)
+    - 가격: 무료 티어 없음, 지역별로 기록된 각 구성 항목당 $0.003, 지역별로 구성 규칙 평가당 $0.001
+  - AWS Config Resource
+    - 시간별로 리소스의 컴플라이언스 보기
+    - 시간별로 리소스의 구성 보기
+    - 시간별로 리소스에 대한 CloudTrail API 호출 보기
+  - Config Rules – Remediations
+    - AWS Config Rules를 사용하여 비컴플라이언스 리소스의 자동 복구를 자동화할 수 있습니다. 이를 위해 SSM Automation 문서를 사용합니다.
+    - AWS에서 제공하는 관리형 Automation 문서를 사용하거나 사용자 정의 Automation 문서를 생성할 수 있습니다.
+      - 팁: Lambda 함수를 호출하는 사용자 정의 Automation 문서를 생성할 수 있습니다.
+    - 자동 복구 후에도 리소스가 비컴플라이언스 상태인 경우, 복구 재시도를 설정할 수 있습니다.
+  - Config Rules – Notifications
+    - AWS 리소스가 비컴플라이언트 상태일 때 알림을 받을 수 있습니다.
+    - EventBridge를 사용하여 비컴플라이언트인 AWS 리소스가 발생할 때 알림을 트리거할 수 있습니다.
+    - 구성 변경 및 컴플라이언스 상태 알림을 SNS로 전송할 수 있는 기능이 있습니다.
+    - 모든 이벤트에 대한 알림을 받으려면 SNS 필터링을 사용하거나 클라이언트 측에서 필터링할 수 있습니다.
+- CloudWatch vs CloudTrail vs Config
+  - CloudWatch
+    - 성능 모니터링 (메트릭, CPU, 네트워크 등) 및 대시보드
+    - 이벤트 및 경고 기능
+    - 로그 집계 및 분석
+  - CloudTrail
+    - 계정 내에서 모든 사람이 수행한 API 호출 기록
+    - 특정 리소스에 대한 트레일 정의 가능
+    - 글로벌 서비스
+  - Config
+    - 구성 변경 사항 기록
+    - 리소스를 컴플라이언스 규칙에 대해 평가
+    - 변경 및 컴플라이언스의 타임라인 확인
+  - For an Elastic Load Balancer
+    - CloudWatch
+      - 수신 연결 메트릭 모니터링
+      - 시간에 따른 오류 코드의 백분율 시각화
+      - 로드 밸런서 성능 파악을 위한 대시보드 생성
+    - Config
+      - 로드 밸런서의 보안 그룹 규칙 추적
+      - 로드 밸런서의 구성 변경 추적
+      - 로드 밸런서에 항상 SSL 인증서가 할당되도록 확인 (컴플라이언스)
+    - CloudTrail
+      - API 호출로 로드 밸런서에 대한 변경 사항을 수행한 사용자 추적
