@@ -85,7 +85,105 @@
 - IAM 정책의 문장은 시드, 효과, 원칙, 조치, 리소스, 그리고 조건으로 구성됩니다. 버전은 IAM 정책 자체의 일부이지, 문장의 일부가 아닙니다.
 
 
-
-
+# Advanced Identity in AWS
+- AWS Organizations
+  - 글로벌 서비스(Global service)
+  - 여러 AWS 계정을 관리할 수 있도록 해줍니다.
+  - 주 계정은 관리 계정이며, 다른 계정은 멤버 계정입니다.
+  - 멤버 계정은 하나의 조직에만 속할 수 있습니다.
+  - 모든 계정에 대해 통합된 청구 - 단일 결제 방법
+  - 집계된 사용량에 대한 가격 혜택(EC2, S3 등의 대량 할인)
+  - 여러 계정 간에 공유되는 예약 인스턴스 및 Savings Plans 할인
+  - AWS 계정 생성 자동화를 위한 API 사용 가능
+  - 장점
+    - 다중 계정 vs 단일 계정 다중 VPC
+    - 청구 목적을 위한 태깅 표준 사용
+    - 모든 계정에 CloudTrail 활성화, 로그를 중앙 S3 계정으로 전송
+    - CloudWatch Logs를 중앙 로깅 계정으로 전송
+    - 관리 목적으로 Cross Account 역할 설정
+  - 보안: 서비스 제어 정책 (SCP)
+    - OU 또는 계정에 적용되는 IAM 정책으로 사용자 및 역할 제한
+    - 관리 계정에는 적용되지 않음 (전체 관리자 권한)
+    - 명시적인 허용이 필요함 (기본적으로는 아무 것도 허용하지 않음 - IAM과 유사)
+- IAM Conditions
+  - aws:SourceIp : API 호출이 수행되는 클라이언트 IP를 제한합니다.
+  - aws:RequestedRegion : API 호출이 수행되는 대상 지역을 제한합니다.
+  - ec2:ResourceTag : 태그 기반으로 제한합니다.
+  - aws:MultiFactorAuthPresent : MFA 강제를 위해 사용합니다.
+- IAM for S3 
+  - s3:ListBucket 권한은 arn:aws:s3:::test에 적용됩니다. 버킷 수준의 권한입니다.
+  - s3:GetObject, s3:PutObject, s3:DeleteObject 권한은 arn:aws:s3:::test/*에 적용됩니다. 객체 수준의 권한입니다.
+  - aws:PrincipalOrgID는 AWS 조직의 멤버 계정에 대한 액세스를 제한하기 위해 모든 리소스 정책에서 사용할 수 있습니다.
+- IAM Roles vs Resource Based Policies
+  - 크로스 계정
+    - 리소스 기반 정책을 리소스에 연결하는 것 (예: S3 버킷 정책)
+    - 또는 역할을 프록시로 사용하는 것
+  - 역할을 가정하면 (사용자, 애플리케이션 또는 서비스), 원래 권한을 포기하고 역할에 할당된 권한을 사용합니다.
+  - 리소스 기반 정책을 사용할 때, 주체는 권한을 포기할 필요가 없습니다.
+  - 예시: 계정 A의 사용자가 계정 A의 DynamoDB 테이블을 스캔하고, 그것을 계정 B의 S3 버킷에 저장해야 하는 경우.
+  - 지원되는 서비스: Amazon S3 버킷, SNS 토픽, SQS 큐 등
+- Amazon EventBridge - 보안
+  - 규칙이 실행될 때 대상에 대한 권한이 필요합니다.
+  - 리소스 기반 정책: Lambda, SNS, SQS, CloudWatch Logs, API Gateway 등
+  - IAM 역할: Kinesis 스트림, Systems Manager Run Command, ECS 작업 등
+- IAM Permission Boundaries
+  - IAM 권한 경계(permission boundaries)은 AWS 조직(SCP)과 조합하여 사용할 수 있습니다
+  - 사용 사례
+    - IAM 사용자를 만들기와 같은 작업을 비관리자에게 위임하는 경우
+    - 개발자가 정책을 자체로 할당하고 자신의 권한을 관리할 수 있도록 허용하면서 권한을 "에스컬레이션"하지 못하도록하는 경우(= 관리자 권한 획득 방지)
+    - 조직 및 SCP를 사용하는 대신 특정 사용자의 권한을 제한하는 데 유용합니다.
+- AWS IAM Identity Center (successor to AWS Single Sign-On)
+  - AWS 조직 내 모든 AWS 계정에 대한 단일 로그인(Single Sign-On)
+    - 비즈니스 클라우드 애플리케이션 (예: Salesforce, Box, Microsoft 365 등)
+    - SAML 2.0을 지원하는 애플리케이션
+    - EC2 Windows 인스턴스
+  - 신원 제공자
+    - IAM Identity Center의 내장된 신원 저장소
+    - 제3자: Active Directory (AD), OneLogin, Okta 등
+  - AWS IAM Identity Center는 세부적인 권한과 할당을 제공합니다.
+    - 멀티 계정 권한
+      - AWS 조직 내의 AWS 계정 간의 액세스 관리
+      - 권한 세트 - 하나 이상의 IAM 정책을 사용자와 그룹에 할당하여 AWS 액세스를 정의하는 것
+      - 애플리케이션 할당
+    - 다양한 SAML 2.0 비즈니스 애플리케이션(Salesforce, Box, Microsoft 365 등)에 대한 SSO 액세스
+      - 필요한 URL, 인증서 및 메타데이터 제공
+    - 속성 기반 액세스 제어 (ABAC)
+      - IAM Identity Center 신원 저장소에 저장된 사용자 속성을 기반으로 한 세부적인 권한
+      - 예: 비용 센터, 직함, 지역 등
+      - 사용 사례: 권한을 한 번 정의한 후에 속성을 변경함으로써 AWS 액세스 수정 가능
+- Microsoft Active Directory (AD)
+  - AD Domain Services가 설치된 Windows Server에 발견됩니다.
+  - 객체 데이터베이스: 사용자 계정, 컴퓨터, 프린터, 파일 공유, 보안 그룹 등
+  - 중앙 집중식 보안 관리, 계정 생성, 권한 할당
+  - 객체는 트리로 구성됩니다.
+  - 여러 트리의 집합을 포레스트라고 합니다.
+- AWS Directory Services
+  - AWS 관리형 Microsoft AD
+    - AWS에서 자체 AD를 생성하여 로컬로 사용자를 관리하고 MFA를 지원합니다.
+    - 온프레미스 AD와 "신뢰(trust)" 연결을 설정할 수 있습니다.
+  - AD 커넥터
+    - 온프레미스 AD로 리디렉션하기 위한 디렉터리 게이트웨이(프록시)로 MFA를 지원합니다.
+    - 사용자는 온프레미스 AD에서 관리됩니다.
+  - Simple AD
+    - AWS에서 호환되는 관리형 디렉터리입니다.
+    - 온프레미스 AD와 연결할 수 없습니다.
+- IAM Identity Center - Active Directory 설정
+  - AWS 관리형 Microsoft AD (디렉토리 서비스)에 연결
+    - 통합은 기본적으로 지원됩니다.
+  - 자체 관리형 디렉토리에 연결
+    - AWS 관리형 Microsoft AD를 사용하여 양방향 신뢰 관계 생성
+    - AD 커넥터 생성
+- AWS Control Tower
+  - AWS Control Tower는 모범 사례를 기반으로 안전하고 규정 준수를 갖춘 멀티 계정 AWS 환경을 쉽게 구축하고 관리하는 방법입니다.
+  - AWS Control Tower는 AWS Organizations를 사용하여 계정을 생성합니다.
+  - 이점
+    - 몇 번의 클릭으로 환경을 자동으로 설정할 수 있습니다.
+    - 가드레일을 사용하여 지속적인 정책 관리 자동화
+    - 정책 위반을 감지하고 해결할 수 있습니다.
+    - 대화식 대시보드를 통해 규정 준수를 모니터링할 수 있습니다.
+  - Guardrails
+    - Control Tower 환경 (AWS 계정)에 대한 지속적인 거버넌스 제공
+    - 예방적인 가드레일 - SCP(서비스 제어 정책) 사용 (예: 모든 계정에 대한 지역 제한 설정)
+    - 탐지적인 가드레일 - AWS Config 사용 (예: 태그가 지정되지 않은 리소스 식별)
 
 
