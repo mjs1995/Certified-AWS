@@ -100,3 +100,134 @@
     - Secrets Manager는 읽기 복제본을 기본 Secret과 동기화합니다.
     - 읽기 복제본 Secret을 독립된 Secret으로 승격시킬 수 있습니다.
     - 사용 사례: 다중 리전 애플리케이션, 재해 복구 전략, 다중 리전 데이터베이스 등
+- AWS Certificate Manager (ACM)
+  - TLS 인증서를 쉽게 프로비저닝, 관리 및 배포할 수 있습니다.
+  - 웹 사이트에 대한 인터넷 상의 암호화를 제공합니다 (HTTPS).
+  - 공개 및 비공개 TLS 인증서 모두 지원합니다.
+  - 공개 TLS 인증서는 무료로 제공됩니다.
+  - 자동 TLS 인증서 갱신 기능을 제공합니다.
+    - Elastic Load Balancer (CLB, ALB, NLB)와의 통합 지원
+    - CloudFront 배포와의 통합 지원
+    - API Gateway의 API와의 통합 지원
+  - EC2에서 ACM을 사용할 수 없습니다 (추출할 수 없음).
+  - 공개 인증서 요청
+    - 인증서에 포함될 도메인 이름 목록을 나열합니다.
+      - 완전히 정규화된 도메인 이름 (FQDN): corp.example.com
+      - 와일드카드 도메인: *.example.com
+    - 유효성 검증 방법 선택: DNS 유효성 검증 또는 이메일 유효성 검증
+      - 자동화 목적을 위해 DNS 유효성 검증을 선호합니다.
+      - 이메일 유효성 검증은 WHOIS 데이터베이스의 연락처 주소로 이메일을 전송합니다.
+      - DNS 유효성 검증은 CNAME 레코드를 DNS 구성에 활용합니다 (예: Route 53).
+    - 몇 시간이 걸릴 수 있습니다.
+    - 공개 인증서는 자동 갱신을 위해 등록됩니다.
+      - ACM은 인증서의 만료 60일 전에 자동으로 ACM에서 생성한 인증서를 갱신합니다.
+  - 공개 인증서 가져오기
+    - ACM 외부에서 인증서를 생성한 다음 가져올 수 있습니다.
+    - 자동 갱신이 없으며, 만료 전에 새 인증서를 가져와야 합니다.
+    - ACM은 만료 45일 전부터 매일 만료 이벤트를 전송합니다.
+      - 일 수는 구성 가능합니다.
+      - 이벤트는 EventBridge에 표시됩니다.
+    - AWS Config에는 acm-certificate-expiration-check라는 관리되는 규칙이 있는데, 만료 예정인 인증서를 확인할 수 있습니다. (구성 가능한 일 수)
+  - API Gateway - 엔드포인트 유형
+    - 엣지 최적화 (기본값): 글로벌 클라이언트를 위한 것
+      - 요청은 CloudFront 엣지 위치를 통해 라우팅됩니다 (지연 시간 향상)
+      - API Gateway는 여전히 하나의 리전에 존재합니다.
+    - 리전별
+      - 동일한 리전의 클라이언트를 위한 것
+      - 수동으로 CloudFront와 결합할 수 있습니다 (캐싱 전략 및 배포에 대한 더 많은 제어 가능)
+    - 개인
+      - 인터페이스 VPC 엔드포인트 (ENI)를 사용하여 VPC에서만 액세스할 수 있습니다.
+      - 액세스를 정의하기 위해 리소스 정책을 사용합니다.
+  - API Gateway와의 통합
+    - API Gateway에서 사용자 정의 도메인 이름을 만듭니다.
+    - 엣지 최적화 (기본값): 글로벌 클라이언트를 위한 것
+      - 요청은 CloudFront 엣지 위치를 통해 라우팅됩니다 (지연 시간 향상)
+      - API Gateway는 여전히 하나의 리전에 존재합니다.
+      - TLS 인증서는 CloudFront와 동일한 리전인 us-east-1에 있어야 합니다.
+      - 그런 다음 Route 53에서 CNAME 또는 (더 좋은) A-Alias 레코드를 설정합니다.
+    - 리전별
+      - 동일한 리전의 클라이언트를 위한 것
+      - TLS 인증서는 API Gateway에서 가져와야 하며, API 스테이지와 동일한 리전에 있어야 합니다.
+      - 그런 다음 Route 53에서 CNAME 또는 (더 좋은) A-Alias 레코드를 설정합니다.
+- AWS WAF - 웹 애플리케이션 방화벽
+  - 웹 애플리케이션을 일반적인 웹 공격으로부터 보호합니다 (레이어 7).
+  - 레이어 7은 HTTP를 의미합니다 (레이어 4는 TCP/UDP입니다).
+  - 다음에 배포할 수 있습니다.
+    - Application Load Balancer
+    - API Gateway
+    - CloudFront
+    - AppSync GraphQL API
+    - Cognito 사용자 풀
+  - 웹 ACL (Web Access Control List) 규칙 정의
+    - IP 세트: 최대 10,000개의 IP 주소 - 더 많은 IP 주소를 위해 여러 규칙 사용
+    - HTTP 헤더, HTTP 본문 또는 URI 문자열로부터 보호 - SQL 삽입 및 크로스 사이트 스크립팅 (XSS)
+    - 크기 제약, 지리 매치 (국가 차단)
+    - 발생 이벤트를 카운트하는 레이트 기반 규칙 - DDoS 보호를 위해
+  - 웹 ACL은 CloudFront를 제외한 리전별로 적용됩니다.
+  - 규칙 그룹은 웹 ACL에 추가할 수 있는 재사용 가능한 규칙 세트입니다.
+  - WAF는 네트워크 로드 밸런서 (Layer 4)를 지원하지 않습니다.
+  - 고정 IP를 사용하기 위해 Global Accelerator를 사용하고, WAF는 ALB에 사용할 수 있습니다.
+- AWS Shield는 DDoS(분산 서비스 거부) 공격으로부터 보호해주는 서비스입
+  - DDoS: 동시에 많은 요청이 발생하는 공격
+  - AWS Shield Standard
+    - 모든 AWS 고객에게 자동으로 활성화되는 무료 서비스
+    - SYN/UDP Floods, Reflection 공격 및 기타 레이어 3/레이어 4 공격 등으로부터 보호
+  - AWS Shield Advanced
+    - 선택적인 DDoS 방어 서비스 ($3,000 월별 조직당)
+    - Amazon EC2, Elastic Load Balancing (ELB), Amazon CloudFront, AWS Global Accelerator, Route 53에서 더 공격적인 공격으로부터 보호
+    - 24/7 AWS DDoS 대응 팀 (DRP)에 대한 액세스
+    - DDoS로 인한 사용량 증가로 인한 추가 비용 방지
+    - Shield Advanced는 애플리케이션 레이어 DDoS 방어를 자동으로 수행하며, 레이어 7 공격을 완화하기 위해 AWS WAF 규칙을 자동으로 생성, 평가, 배포
+- AWS Firewall Manager
+  - AWS Organization의 모든 계정에서 규칙을 관리합니다.
+  - 보안 정책: 공통 보안 규칙 세트
+    - WAF 규칙 (Application Load Balancer, API Gateway, CloudFront)
+    - AWS Shield Advanced (ALB, CLB, NLB, Elastic IP, CloudFront)
+    - EC2, Application Load Balancer 및 VPC의 ENI 리소스에 대한 보안 그룹
+    - AWS Network Firewall (VPC 수준)
+    - Amazon Route 53 Resolver DNS 방화벽
+    - 정책은 지역 수준에서 생성됩니다.
+  - 규칙은 새로운 리소스가 생성될 때 적용됩니다(컴플라이언스에 좋음). 조직의 모든 계정 및 향후 계정에 적용됩니다.
+- WAF vs. Firewall Manager vs. Shield
+  - WAF, Shield 및 Firewall Manager는 종합적인 보호를 위해 함께 사용됩니다.
+  - 웹 ACL 규칙을 WAF에서 정의합니다.
+  - 자원의 세부적인 보호를 위해서는 WAF만 사용하는 것이 올바른 선택입니다.
+  - AWS WAF를 계정 전체에 걸쳐 사용하고, WAF 구성을 가속화하고, 새로운 자원의 보호를 자동화하려면 Firewall Manager를 AWS WAF와 함께 사용하세요.
+  - Shield Advanced는 AWS WAF 위에 추가 기능을 제공하며, Shield Response Team (SRT)로부터 전용 지원과 고급 보고서를 제공합니다.
+  - 자주 DDoS 공격을 받는 경우, Shield Advanced를 구매하는 것을 고려해보세요.
+- Amazon GuardDuty
+  - AWS 계정 보호를 위한 지능형 위협 탐지
+  - 기계 학습 알고리즘, 이상 탐지, 제3자 데이터를 사용합니다.
+  - 클릭 한 번으로 활성화할 수 있으며 (30일 무료 평가판), 소프트웨어 설치가 필요하지 않습니다.
+  - 입력 데이터는 다음을 포함합니다
+    - CloudTrail 이벤트 로그 - 비정상적인 API 호출, 무단 배포 등
+      - CloudTrail 관리 이벤트 - VPC 서브넷 생성, 트레일 생성 등
+      - CloudTrail S3 데이터 이벤트 - 객체 가져오기, 객체 목록 보기, 객체 삭제 등
+    - VPC 플로우 로그 - 비정상적인 내부 트래픽, 비정상적인 IP 주소 등
+    - DNS 로그 - 타협된 EC2 인스턴스가 DNS 쿼리 내에서 인코딩된 데이터를 보내는 경우
+    - Kubernetes 감사 로그 - 수상한 활동 및 잠재적인 EKS 클러스터 침해
+  - EventBridge 규칙을 설정하여 발견 사항이 있는 경우 알림을 받을 수 있습니다.
+  - EventBridge 규칙은 AWS Lambda 또는 SNS를 대상으로 할 수 있습니다.
+  - 암호화폐 공격에 대한 보호도 가능하며, 이를 위한 전용 "발견"이 있습니다.
+- Amazon Inspector
+  - 자동 보안 평가
+  - EC2 인스턴스용
+    - AWS Systems Manager (SSM) 에이전트 활용
+    - 의도치 않은 네트워크 접근 가능성 분석
+    - 실행 중인 운영 체제에 대한 알려진 취약점 분석
+  - Amazon ECR로 컨테이너 이미지 푸시
+    - 컨테이너 이미지 푸시 시 평가 수행
+  - 람다 함수용
+    - 함수 코드 및 패키지 종속성에서 소프트웨어 취약점 식별
+    - 함수 배포 시 평가 수행
+  - 보고서 및 AWS Security Hub과의 통합
+  - 결과를 Amazon EventBridge로 전송
+  - 평가 내용
+    - EC2 인스턴스, 컨테이너 이미지 및 람다 함수에만 해당됩니다.
+    - 필요한 경우에만 인프라의 지속적인 스캔 수행
+    - 패키지 취약점 (EC2, ECR 및 람다) - CVE 데이터베이스
+    - 네트워크 접근 가능성 (EC2)
+    - 우선순위를 위해 모든 취약점에 대해 위험 점수가 할당됩니다.
+- AWS Macie
+  - Amazon Macie는 기계 학습과 패턴 매칭을 사용하여 AWS에서 민감한 데이터를 검색하고 보호하는 완전히 관리되는 데이터 보안 및 데이터 개인 정보 보호 서비스입니다.
+  - Macie는 개인 식별 정보 (PII)와 같은 민감한 데이터를 식별하고 경고를 알려줍니다.
