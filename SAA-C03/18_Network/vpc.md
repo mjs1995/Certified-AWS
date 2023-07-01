@@ -137,3 +137,165 @@
     - 시험에서는 대부분 게이트웨이 엔드포인트가 선호될 것입니다.
     - 비용: 게이트웨이 엔드포인트는 무료이고, 인터페이스 엔드포인트는 요금이 부과됩니다.
     - 인터페이스 엔드포인트는 온프레미스(사이트 간 VPN 또는 Direct Connect), 다른 VPC 또는 다른 리전에서 액세스가 필요한 경우에 선호됩니다.
+- VPC Flow Logs
+  - 인터페이스로 들어가는 IP 트래픽에 대한 정보를 캡처합니다.
+    - VPC Flow Logs
+    - 서브넷 Flow Logs
+    - Elastic Network Interface (ENI) Flow Logs
+  - 연결성 문제를 모니터링하고 문제 해결에 도움이 됩니다.
+  - Flow logs 데이터는 S3, CloudWatch Logs 및 Kinesis Data Firehose로 전송될 수 있습니다.
+  - AWS에서 관리하는 인터페이스(ELB, RDS, ElastiCache, Redshift, WorkSpaces, NATGW, Transit Gateway)에서도 네트워크 정보를 캡처합니다.
+  - VPC Flow Logs 구문
+    - srcaddr 및 dstaddr – 문제가 있는 IP를 식별하는 데 도움이 됩니다.
+    - srcport 및 dstport – 문제가 있는 포트를 식별하는 데 도움이 됩니다.
+    - Action – Security Group 또는 NACL로 인한 요청의 성공 또는 실패를 나타냅니다.
+    - 사용 패턴 또는 악성 행위에 대한 분석에 사용할 수 있습니다.
+    - S3 또는 CloudWatch Logs Insights에서 Athena를 사용하여 VPC 플로우 로그를 쿼리할 수 있습니다.
+- AWS Site-to-Site VPN
+  - Virtual Private Gateway (VGW)
+    - VPN 연결의 AWS 측에 위치한 VPN 집중기
+    - VGW는 Site-to-Site VPN 연결을 생성하려는 VPC에 생성되고 연결됩니다.
+    - ASN (자율 시스템 번호) 사용자 정의 가능
+  - Customer Gateway (CGW)
+    - VPN 연결의 고객 측에 위치한 소프트웨어 응용 프로그램 또는 물리적 장치
+  - Connections
+    - 고객 게이트웨이 장치 (온프레미스)
+    - 어떤 IP 주소를 사용해야 하나요?
+      - 고객 게이트웨이 장치에 대한 공개 인터넷 라우터블 IP 주소
+      - NAT-T(NAT 트래버스)를 지원하는 NAT 장치 뒤에 있다면, NAT 장치의 공개 IP 주소를 사용합니다.
+    - 중요한 단계: 라우트 테이블과 연관된 가상 프라이빗 게이트웨이에 대한 라우트 전파를 활성화합니다.
+    - 온프레미스에서 EC2 인스턴스에 ping을 보내려면, 보안 그룹의 인바운드에 ICMP 프로토콜을 추가해야 합니다.
+- AWS VPN CloudHub
+  - 여러 개의 사이트 간에 안전한 통신을 제공합니다. 여러 VPN 연결이 있는 경우 사용합니다.
+  - 다양한 위치 간의 기본 또는 보조 네트워크 연결을 위한 저렴한 허브-스포크 모델입니다 (VPN 전용).
+  - VPN 연결이므로 공개 인터넷을 통해 이루어집니다.
+  - 설정하기 위해 동일한 VGW에 여러 개의 VPN 연결을 연결하고, 동적 라우팅을 설정하고, 라우트 테이블을 구성해야 합니다.
+- Direct Connect (DX)
+  - 원격 네트워크와 VPC 간에 전용 개인 연결을 제공합니다.
+  - 전용 연결은 DC와 AWS Direct Connect 위치 간에 설정되어야 합니다.
+  - VPC에 Virtual Private Gateway를 설정해야 합니다.
+  - 동일한 연결에서 공용 리소스(S3)와 사설 리소스(EC2)에 액세스할 수 있습니다.
+  - 사용 사례
+    - 대용량 데이터 세트 처리를 위한 대역폭 스루풋 증가 - 비용 절감
+    - 실시간 데이터 피드를 사용하는 응용 프로그램에서 일관된 네트워크 경험 제공
+    - 하이브리드 환경 (온프레미스 + 클라우드)
+  - IPv4와 IPv6 모두 지원합니다.
+  - Direct Connect Gateway
+    - 하나 이상의 VPC를 여러 다른 리전에 설정하려는 경우 (동일한 계정 내) Direct Connect를 사용해야 하는 경우에 사용됩니다.
+  - Connection Types
+    - Dedicated Connections: 1Gbps, 10Gbps 및 100Gbps 용량
+      - 고객에게 할당된 전용 물리적 이더넷 포트
+      - 요청은 먼저 AWS에게 제출되며, 그 후 AWS Direct Connect 파트너에 의해 완료됩니다.
+    - Hosted Connections: 50Mbps, 500Mbps에서 10Gbps까지
+      - 연결 요청은 AWS Direct Connect 파트너를 통해 이루어집니다.
+      - 용량은 필요에 따라 추가하거나 제거할 수 있습니다.
+      - 1Gbps, 2Gbps, 5Gbps, 10Gbps는 일부 AWS Direct Connect 파트너에서 사용할 수 있습니다.
+    - 새로운 연결을 설정하는 데 걸리는 시간은 종종 1개월 이상입니다.
+- Site-to-Site VPN connection as a backup
+  - Direct Connect가 실패할 경우, 비용이 많이 드는 백업 Direct Connect 연결 또는 Site-to-Site VPN 연결을 설정할 수 있습니다.
+- Transit Gateway
+  - 수천 개의 VPC 및 온프레미스 간에 전이적 피어링을 구현하기 위해 Transit Gateway를 사용할 수 있습니다. 이는 허브-앤-스포크(스타) 연결 모델을 제공합니다.
+  - Transit Gateway는 지역적인 리소스로서 교차 리전 작업이 가능하며, 리소스 액세스 관리자(Resource Access Manager, RAM)를 사용하여 교차 계정 공유가 가능합니다.
+  - Transit Gateway를 리전 간에 피어링할 수도 있습니다. 또한, Direct Connect Gateway, VPN 연결과 함께 작동하며, IP 멀티캐스트를 지원합니다(다른 AWS 서비스에서는 지원하지 않음).
+  - Site-to-Site VPN ECMP
+    - ECMP는 여러 최적 경로를 통해 패킷을 전송할 수 있는 라우팅 전략입니다.
+    - 이를 활용하여 여러 개의 Site-to-Site VPN 연결을 생성하여 연결 대역폭을 증가시킬 수 있습니다.
+- VPC –Traffic Mirroring
+  - VPC 트래픽 미러링은 VPC 내에서 네트워크 트래픽을 캡처하고 검사할 수 있는 기능입니다.
+  - 관리하는 보안 애플라이언스로 트래픽을 라우팅할 수 있습니다.
+  - 트래픽 미러링의 특징입니다
+    - 출발지 (소스) - ENI (탄력적 네트워크 인터페이스)
+    - 대상 - ENI 또는 네트워크 로드 밸런서
+  - 모든 패킷을 캡처하거나 관심 있는 패킷만 캡처할 수 있으며, 선택적으로 패킷을 잘라낼 수도 있습니다.
+  - 출발지와 대상은 동일한 VPC 내에 있을 수도 있고, 다른 VPC (VPC 피어링)에 위치할 수도 있습니다.
+  - 콘텐츠 검사, 위협 모니터링, 문제 해결 등 다양한 용도로 사용할 수 있습니다.
+- VPC에서의 IPv6
+  - VPC와 서브넷에서는 IPv4를 비활성화할 수 없습니다.
+  - 대신 IPv6를 사용하여 듀얼 스택 모드로 운영할 수 있습니다.
+  - EC2 인스턴스는 적어도 하나의 개인적인 내부 IPv4와 공개적인 IPv6를 받게 됩니다.
+  - 인터넷 게이트웨이를 통해 IPv4 또는 IPv6를 사용하여 인터넷과 통신할 수 있습니다.
+  - Troubleshooting
+    - VPC와 서브넷에서는 IPv4를 비활성화할 수 없습니다.
+    - 따라서, 서브넷에서 EC2 인스턴스를 시작할 수 없는 경우
+      - 이는 IPv6를 얻을 수 없어서가 아닌
+      - 해당 서브넷에서 사용 가능한 IPv4 주소가 없기 때문입니다.
+    - 해결 방법: 서브넷에서 새로운 IPv4 CIDR을 생성합니다.
+- Egress-only 인터넷 게이트웨이
+  - IPv6 전용으로 사용됩니다.(IPv6에 대한 NAT 게이트웨이와 유사합니다.)
+  - IPv6를 통한 VPC 내 인스턴스의 아웃바운드 연결을 허용하면서도 인터넷이 인스턴스로의 IPv6 연결을 시작하지 못하게 합니다.
+  - 라우트 테이블을 업데이트해야 합니다.
+
+# VPC 정리
+- ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/5cdecfd4-6ca5-4542-b29d-1663ec9489e5)
+- CIDR - IP 범위
+- VPC - 가상 개인 클라우드 => IPv4 및 IPv6 CIDR 목록을 정의합니다.
+- 서브넷 - AZ에 연결되며 CIDR을 정의합니다.
+- 인터넷 게이트웨이 - VPC 수준에서 IPv4 및 IPv6 인터넷 액세스를 제공합니다.
+- 라우트 테이블 - 서브넷에서 IGW, VPC 피어링 연결, VPC 엔드포인트 등으로의 경로를 추가하기 위해 편집해야 합니다.
+- 베스천 호스트 - 개인 서브넷의 EC2 인스턴스에 SSH 연결을 제공하기 위한 공개 EC2 인스턴스입니다.
+- NAT 인스턴스 - 개인 서브넷의 EC2 인스턴스에 인터넷 액세스를 제공합니다. 오래된 방식으로 공개 서브넷에 설정해야 하며 소스/대상 확인 플래그를 비활성화해야 합니다.
+- NAT 게이트웨이 - AWS에서 관리하는 것으로 개인 EC2 인스턴스에 확장 가능한 인터넷 액세스를 제공합니다. IPv4 전용입니다.
+- Private DNS + Route 53 - DNS 해결 및 DNS 호스트 이름을 사용할 수 있게 합니다. (VPC)
+- NACL (Network Access Control Lists) - 상태를 가지지 않는(stateless) 서브넷 수준의 인바운드 및 아웃바운드 규칙을 제공하며, 일회성 포트(Ephemeral Ports)를 고려해야 합니다.
+- 보안 그룹 - 상태를 가지는(stateful) EC2 인스턴스 수준에서 작동하며, 보안 그룹간에 트래픽이 상태를 유지합니다.
+- Reachability Analyzer - AWS 리소스간의 네트워크 연결성 테스트를 수행합니다.
+- VPC 피어링 - 중첩되지 않는 CIDR을 가진 두 개의 VPC를 연결하며, 비전이적(transitive)이지 않습니다.
+- VPC 엔드포인트 - VPC 내부에서 AWS 서비스(S3, DynamoDB, CloudFormation, SSM)에 대한 프라이빗 액세스를 제공합니다.
+- VPC 플로우 로그 - VPC / 서브넷 / ENI 수준에서 설정할 수 있으며, ACCEPT 및 REJECT 트래픽에 대한 정보를 기록하여 공격을 식별하고, Athena 또는 CloudWatch Logs Insights를 사용하여 분석할 수 있습니다.
+- Site-to-Site VPN - DC에 고객 게이트웨이를 설정하고, VPC에 가상 프라이빗 게이트웨이를 설정하여 공개 인터넷을 통해 site-to-site VPN을 설정합니다.
+- AWS VPN CloudHub - 사이트를 연결하기 위한 허브-앤-스포크 VPN 모델입니다.
+- Direct Connect - VPC에 가상 프라이빗 게이트웨이를 설정하고, AWS Direct Connect 위치에 직접적인 프라이빗 연결을 수립합니다.
+- Direct Connect Gateway - 서로 다른 AWS 리전의 여러 VPC에 대한 Direct Connect을 설정합니다.
+- AWS PrivateLink / VPC 엔드포인트 서비스
+  - 서비스 VPC에서 고객 VPC로 프라이빗하게 서비스를 연결합니다.
+  - VPC 피어링, 공개 인터넷, NAT 게이트웨이, 라우팅 테이블이 필요하지 않습니다.
+  - 네트워크 로드 밸런서 및 ENI와 함께 사용해야 합니다.
+- ClassicLink - EC2-Classic EC2 인스턴스를 VPC에 프라이빗하게 연결합니다.
+- Transit Gateway - VPC, VPN 및 DX를 위한 전이적 피어링 연결을 제공합니다.
+- 트래픽 미러링 - ENI의 네트워크 트래픽을 복사하여 추가 분석을 위해 사용합니다.
+- Egress-only Internet Gateway - IPv6를 위한 NAT 게이트웨이와 유사한 역할을 합니다.
+
+# 네트워킹
+- Minimizing egress traffic network cost
+  - 공용 IP 대신에 사설 IP를 사용하여 비용 절감과 네트워크 성능 향상을 이룰 수 있습니다.
+  - 최대의 비용 절감을 위해 같은 가용 영역을 사용하세요 (가용성에 따른 비용 증가 가능성 존재)
+  - 이그레스 트래픽: AWS에서 외부로 나가는 트래픽
+  - 인그레스 트래픽: 외부에서 AWS로 들어오는 트래픽 (일반적으로 무료)
+  - 비용을 최소화하기 위해 AWS 내에서 인터넷 트래픽을 최소한으로 유지하려고 노력하세요.
+  - 같은 AWS 리전에 위치한 Direct Connect 위치는 이그레스 네트워크에 대한 낮은 비용을 가져옵니다.
+- S3 Data Transfer Pricing – Analysis for USA
+  - S3 인그레스: 무료
+  - S3에서 인터넷으로의 전송: 1GB 당 $0.09
+  - S3 Transfer Acceleration
+    - 전송 시간이 빨라집니다 (50 ~ 500% 향상)
+    - 데이터 전송 가격에 추가 비용이 발생합니다: 1GB 당 +$0.04 ~ $0.08
+  - S3에서 CloudFront로의 전송: 1GB 당 $0.00
+  - CloudFront에서 인터넷으로의 전송: 1GB 당 $0.085 (S3보다 약간 더 저렴)
+    - 캐싱 기능 (지연 시간 감소)
+    - S3 요청 가격과 관련된 비용을 줄일 수 있습니다 (CloudFront를 사용하면 7배 더 저렴)
+  - S3 교차 리전 복제: 1GB 당 $0.02
+- AWS에서 네트워크를 보호하기 
+  - Network Access Control Lists (NACLs)
+  - Amazon VPC 보안 그룹
+  - AWS WAF (악성 요청에 대한 보호)
+  - AWS Shield 및 AWS Shield Advanced
+  - AWS Firewall Manager (다중 계정에서 관리)
+- AWS Network Firewall
+  - Amazon VPC를 전체적으로 보호함
+  - 3계층부터 7계층까지의 보호
+  - 모든 방향에서 검사할 수 있습니다.
+    - VPC 간 트래픽
+    - 인터넷으로의 아웃바운드
+    - 인터넷으로부터의 인바운드
+    - Direct Connect 및 Site-to-Site VPN을 통해 수신 및 송신
+  - 내부적으로 AWS Network Firewall은 AWS Gateway Load Balancer를 사용합니다.
+  - AWS Firewall Manager에서 중앙에서 관리할 수 있도록 규칙을 다중 VPC에 적용할 수 있습니다.
+  - 제어
+    - AWS Network Firewall은 다음과 같은 기능을 통해 수천 개의 규칙을 지원합니다
+      - IP 및 포트 - 예: 수천 개의 IP 필터링
+      - 프로토콜 - 예: 아웃바운드 통신에 대한 SMB 프로토콜 차단
+      - 상태 기반 도메인 목록 규칙 그룹: *.mycorp.com 또는 제3자 소프트웨어 저장소로의 아웃바운드 트래픽만 허용
+      - 정규식을 사용한 일반적인 패턴 매칭
+    - 규칙과 일치하는 트래픽에 대해 허용, 드롭 또는 경고
+    - 침입 방지 기능을 사용하여 네트워크 위협으로부터 보호하기 위한 액티브 플로우 검사 (Gateway Load Balancer와 유사하지만 모두 AWS에서 관리)
+    - 규칙 일치 로그를 Amazon S3, CloudWatch Logs, Kinesis Data Firehose로 전송
