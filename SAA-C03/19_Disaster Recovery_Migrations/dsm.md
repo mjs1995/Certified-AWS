@@ -84,3 +84,83 @@
       - Aurora MySQL DB 생성
       - mysqldump 유틸리티를 사용하여 MySQL을 Aurora로 마이그레이션 (S3 방법보다 느릴 수 있음)
   - 두 데이터베이스가 모두 작동 중인 경우 DMS 사용
+- RDS 및 Aurora PostgreSQL 마이그레이션
+  - RDS PostgreSQL에서 Aurora PostgreSQL로의 마이그레이션
+    - 옵션 1: RDS PostgreSQL의 DB 스냅샷을 복원하여 PostgreSQL Aurora DB로
+    - 옵션 2: RDS PostgreSQL에서 Aurora Read Replica를 생성하고 복제 지연이 0이 될 때까지 기다린 후 독립된 DB 클러스터로 프로모션 (시간이 소요되며 비용이 발생할 수 있음)
+  - 외부 PostgreSQL에서 Aurora PostgreSQL로의 마이그레이션
+    - 백업을 생성하고 Amazon S3에 저장
+    - aws_s3 Aurora 확장을 사용하여 가져옴
+  - 두 데이터베이스가 모두 작동 중인 경우 DMS 사용
+- AWS와 함께하는 온프레미스 전략
+  - Amazon Linux 2 AMI를 VM 형식(.iso)으로 다운로드 가능
+    - VMWare, KVM, VirtualBox(Oracle VM), Microsoft Hyper-V와 같은 가상화 플랫폼에서 사용 가능
+  - VM Import / Export
+    - 기존 애플리케이션을 EC2로 마이그레이션
+    - 온프레미스 VM을 위한 재해 복구 저장소 전략 구축
+    - EC2에서 VM을 온프레미스로 내보낼 수 있음
+  - AWS Application Discovery Service
+    - 온프레미스 서버에 대한 정보 수집하여 마이그레이션 계획 수립
+    - 서버 활용 및 종속성 매핑
+    - AWS Migration Hub로 추적
+  - AWS Database Migration Service (DMS)
+    - 온프레미스 => AWS, AWS => AWS, AWS => 온프레미스로 데이터베이스 복제
+    - Oracle, MySQL, DynamoDB 등 다양한 데이터베이스 기술과 호환
+  - AWS Server Migration Service (SMS)
+    - 온프레미스 실시간 서버의 증분 복제를 AWS로 수행
+- AWS Backup
+  - 완전히 관리되는 서비스로, AWS 서비스 전반에 걸쳐 백업을 중앙에서 관리하고 자동화할 수 있습니다.
+  - 사용자는 사용자 정의 스크립트나 수동 프로세스를 만들 필요가 없습니다.
+  - AWS Backup은 다음과 같은 서비스를 지원합니다
+    - Amazon EC2 / Amazon EBS
+    - Amazon S3
+    - Amazon RDS (모든 DB 엔진) / Amazon Aurora / Amazon DynamoDB
+    - Amazon DocumentDB / Amazon Neptune
+    - Amazon EFS / Amazon FSx (Lustre 및 Windows File Server)
+    - AWS Storage Gateway (Volume Gateway)
+  - 또한, AWS Backup은 지역 간 백업과 계정 간 백업을 지원합니다.
+  - AWS Backup은 지원되는 서비스에 대해 Point-In-Time Recovery (PITR)를 지원합니다.
+  - 온디맨드 및 예약된 백업을 지원하며, 태그 기반의 백업 정책을 생성할 수 있습니다. 이러한 백업 정책은 Backup Plans라고도 불립니다.
+  - Backup Plans을 설정할 때 다음과 같은 옵션을 설정할 수 있습니다
+    - 백업 빈도 (매 12시간, 매일, 매주, 매월, cron 표현식)
+    - 백업 창 (Backup window)
+    - Cold Storage로의 이전 시기 (Never, Days, Weeks, Months, Years)
+    - 보존 기간 (Always, Days, Weeks, Months, Years)
+  - AWS Backup Vault Lock
+    - AWS Backup Vault에 저장된 모든 백업에 대해 WORM (Write Once Read Many) 상태를 적용합니다.
+    - 이는 다음과 같은 추가적인 방어층을 제공하여 백업을 보호합니다
+      - 실수로나 악의적으로 삭제 작업을 방지합니다.
+      - 보존 기간을 단축하거나 변경하는 업데이트로부터 보호합니다.
+    - 루트 사용자라도 활성화된 경우 백업을 삭제할 수 없습니다.
+- AWS Application Discovery Service
+  - 온프레미스 데이터 센터에 대한 정보를 수집하여 마이그레이션 프로젝트를 계획하는 데 도움을 줍니다.
+  - 마이그레이션을 위해 서버 활용도 데이터와 의존성 매핑은 중요한 정보입니다.
+  - Agentless Discovery (AWS Agentless Discovery Connector)
+    - VM 인벤토리, 구성 및 CPU, 메모리, 디스크 사용량과 같은 성능 이력과 같은 정보를 수집합니다.
+  - Agent-based Discovery (AWS Application Discovery Agent)
+    - 시스템 구성, 시스템 성능, 실행 중인 프로세스 및 시스템 간의 네트워크 연결 세부 정보 등을 수집합니다.
+  - 수집된 데이터는 AWS Migration Hub 내에서 확인할 수 있습니다.
+- AWS Application Migration Service (MGN)
+  - CloudEndure Migration의 "AWS 진화"로서 AWS Server Migration Service (SMS)를 대체하는 서비스입니다.
+  - 이 서비스는 AWS로의 애플리케이션 마이그레이션을 간소화하기 위한 "리프트 앤 쉬프트(rehost)" 솔루션을 제공합니다.
+  - MGN은 물리적, 가상 및 클라우드 기반 서버를 AWS에서 네이티브하게 실행할 수 있도록 변환해 줍니다. 다양한 플랫폼, 운영 체제 및 데이터베이스를 지원하며, 최소한의 다운타임과 비용으로 마이그레이션을 수행할 수 있습니다.
+- VMware Cloud on AWS(VMware Cloud에서 AWS로 진입)
+  - 일부 고객은 VMware Cloud를 사용하여 온프레미스 데이터 센터를 관리합니다.
+  - 그들은 데이터 센터 용량을 AWS로 확장하고 VMware Cloud 소프트웨어를 계속 사용하려고 합니다.
+  - 사용 사례
+    - VMware vSphere 기반 워크로드를 AWS로 마이그레이션
+    - VMware vSphere 기반의 프로덕션 워크로드를 개인, 공용 및 하이브리드 클라우드 환경에서 실행
+    - 재해 복구 전략 구축
+- 대량의 데이터를 AWS로 전송하는 방법
+  - 예시: 200 TB의 데이터를 클라우드로 전송합니다. 우리는 100 Mbps의 인터넷 연결을 가지고 있습니다.
+  - 인터넷 또는 사이트 간 VPN을 통해
+    - 즉시 설정할 수 있습니다.
+    - 200(TB)*1000(GB)*1000(MB)*8(Mb)/100 Mbps = 16,000,000초 = 185일이 소요됩니다.
+  - Direct Connect 1Gbps를 통해
+    - 한 번의 설정에는 시간이 오래 걸립니다(약 한 달).
+    - 200(TB)*1000(GB)*8(Gb)/1 Gbps = 1,600,000초 = 18.5일이 소요됩니다.
+  - Snowball을 통해
+    - 2~3개의 스노우볼을 병렬로 사용해야 합니다.
+    - 전체 전송에는 약 1주일이 소요됩니다.
+  - DMS와 함께 사용할 수 있습니다
+    - 지속적인 복제 또는 전송을 위해: 사이트 간 VPN 또는 DMS 또는 DataSync와 함께 DX를 사용합니다.
