@@ -57,3 +57,61 @@
   - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/895ef981-bf8b-42f4-beec-4e18bbbf4631)
 
 
+# Extra Solution Architecture 
+- S3 Event Notifications
+  - S3:ObjectCreated, S3:ObjectRemoved, S3:ObjectRestore, S3:Replication 등
+  - 객체 이름 필터링 가능 (*.jpg)
+  - 사용 사례: S3에 업로드된 이미지의 썸네일 생성
+  - 원하는 만큼 많은 "S3 이벤트"를 생성할 수 있습니다.
+  - S3 이벤트 알림은 일반적으로 몇 초 내에 이벤트를 전달하지만 때로는 1분 이상 걸릴 수도 있습니다.
+  - S3 Event Notifications with Amazon EventBridge  
+    - JSON 규칙을 사용한 고급 필터링 옵션 (메타데이터, 객체 크기, 이름 등)
+    - 다중 대상 - 예: Step Functions, Kinesis Streams / Firehose 등
+    - EventBridge 기능 - 이벤트 아카이브, 이벤트 재생, 신뢰성 있는 전달
+- 고성능 컴퓨팅(HPC)
+  - 클라우드는 HPC를 수행하기에 이상적인 장소입니다.
+  - 매우 높은 수의 리소스를 빠르게 생성할 수 있습니다.
+  - 추가 리소스를 추가함으로써 결과 도출 시간을 단축할 수 있습니다.
+  - 사용한 시스템에 대해서만 비용을 지불할 수 있습니다.
+  - 유전체학, 계산화학, 금융 리스크 모델링, 날씨 예측, 기계 학습, 딥 러닝, 자율 주행 등을 수행할 수 있습니다.
+  - 어떤 서비스가 HPC를 수행하는 데 도움이 될까요?
+    - 데이터 관리 및 전송
+      - AWS Direct Connect
+        - 안전한 개인 네트워크를 통해 클라우드로 GB/s 단위의 데이터 이동
+      - Snowball 및 Snowmobile
+        - PB 단위의 데이터를 클라우드로 이동
+      - AWS DataSync
+        - 온프레미스와 S3, EFS, Windows용 FSx 간에 대량의 데이터 이동
+    - 컴퓨팅 및 네트워킹
+      - EC2 인스턴스
+        - CPU 최적화, GPU 최적화
+        - 비용 절감을 위한 스팟 인스턴스 / 스팟 플릿 + 자동 확장
+      - EC2 배치 그룹: 우수한 네트워크 성능을 위한 클러스터
+      - EC2 향상된 네트워킹 (SR-IOV)
+        - 더 높은 대역폭, 더 높은 PPS (초당 패킷 수), 더 낮은 지연 시간
+        - 옵션 1: Elastic Network Adapter (ENA) 최대 100 Gbps
+        - 옵션 2: Intel 82599 VF 최대 10 Gbps – LEGACY
+      - Elastic Fabric Adapter (EFA)
+        - HPC용 향상된 ENA로, 리눅스에서만 작동
+        - 노드 간 통신, 강하게 결합된 워크로드에 적합
+        - 메시지 패싱 인터페이스 (MPI) 표준을 활용
+        - 리눅스 운영 체제를 우회하여 낮은 지연 시간과 안정적인 전송 제공
+    - 저장소
+      - 인스턴스에 연결된 저장소
+        - EBS: io2 Block Express를 사용하여 최대 256,000 IOPS로 확장 가능
+        - 인스턴스 스토어: 수백만 개의 IOPS로 확장 가능, EC2 인스턴스와 연결되며 지연 시간이 낮음
+      - 네트워크 저장소
+        - Amazon S3: 대용량 블롭 저장소, 파일 시스템은 아님
+        - Amazon EFS: 전체 크기에 따라 IOPS 확장 또는 프로비저닝된 IOPS 사용 가능
+        - Amazon FSx for Lustre
+          - HPC에 최적화된 분산 파일 시스템, 수백만 개의 IOPS
+          - S3로 백업됨
+    - 자동화와 오케스트레이션
+      - AWS Batch
+        - AWS Batch는 다중 노드 병렬 작업을 지원하여 여러 EC2 인스턴스에 걸친 단일 작업을 실행할 수 있습니다.
+        - 쉽게 작업을 예약하고 EC2 인스턴스를 시작할 수 있습니다.
+      - AWS ParallelCluster
+        - AWS에서 HPC를 배포하기 위한 오픈 소스 클러스터 관리 도구입니다.
+        - 텍스트 파일로 구성할 수 있습니다.
+        - VPC, 서브넷, 클러스터 유형 및 인스턴스 유형의 자동 생성을 자동화할 수 있습니다.
+        - 클러스터에서 EFA를 활성화할 수 있는 기능도 있습니다. (네트워크 성능 향상)
