@@ -296,3 +296,36 @@
       - Amazon CloudFront, ALB, Amazon API Gateway 등 특정 서비스에서만 무료 사용
     - ACM은 리전 기반
       - AP-Northeast-2 리전의 ALB에서 ACM 발급 인증서 활용 
+
+# AWS IAM 고급
+- IAM 정책의 적용 방식
+  - 명시적인 Deny는 언제나 우선 적용
+    - 하나라도 Deny가 있다면 다른 Allow들은 무시됨
+  - 명시적으로 Allow 하지 않는 경우 묵시적으로 Deny
+  - 명시적으로 Allow가 있다면 권한 획득
+  - IAM 정책 적용 순서
+    - 명시적인 Deny -> SCP(Service Control Policy) -> 리소스 정책 -> 권한 범위 -> 세션 정책(IAM Assume Role) -> 정책의 Allow
+  - Action
+    - 특정 Allow/Deny 할 Action을 정의
+    - List로 설정 가능 
+    - 와일드카드로 모든 Action 표현 가능
+  - NotAction
+    - 지정한 Action 이외에~에 해당하는 조건을 정의
+  - Resource
+    - 무엇을 해당하는 내용을 정의
+    - ARN을 사용해 리소스 표현
+    - 리스트 및 와일드카드로 여러 리소스에 표현 가능하며, Variable 사용 가능 
+  - NotResource
+    - 이것을 제외하고에 해당하는 내용을 정의
+  - Condition
+    - IAM Policy 정책의 적용 조건을 판별 가능
+    - 여러 조건을 활용하여 정책을 잘 구성하는 것이 보안의 핵심 
+
+# AWS의 다양한 보안서비스
+- AWS Secret Manager
+  - 애플리케이션, 서비스, IT 리소스에 액세스할 때 필요한 보안 정보를 보호
+  - 수명 주기에 걸쳐 데이터베이스 자격 증명, API 키 및 다른 보안 정보를 손쉽게 교체, 관리 및 검색할 수 있음 
+  - Secret Manager 특징
+    - 보안 정보(암호, API Key 등)를 안전하게 저장하고 손쉽게 사용할 수 있도록 도와주는 서비스
+    - 보안 정보의 주기적인 교체(Rotation)지원
+    - CloudFormation 등 다른 서비스와 연동하여 안전한 보안 확보 가능
