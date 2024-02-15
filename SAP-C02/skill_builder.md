@@ -20,3 +20,28 @@
       - 서비스 사용 워크로드 대기 시간 감소: Amazon CloudFront, AWS Global Accelerator
       - 재해복구 : RPO, RTO
       - 워크로드 구성요소 및 백업: AWS Elastic Disaster Recovery, AWS Backup
+    - 1.4 다중 계정 AWS 환경을 설계합니다.
+      - 경고 제공: AWS CloudTrail, AWS Config, Amazon EventBridge
+    - 1.5 비용 최적화 및 가시성 전략을 결정합니다.
+      - 다중 지역: VPC Peering, AWS Transit Gateway, AWAS Direct Connect, AWS Site-to-Site VPN, Endpoint, Amazon CloudFront
+      - 비용 및 청구 관리: AWS Organizations 
+      - 비용 모니터링: AWS Compute Optimizer, AWS Cost Explorer, Amazon Athena, Amazon QuickSight, AWS Budgets
+  - 2.0 새로운 솔루션을 위한 설계
+    - 2.1 비즈니스 요구 사항을 충족하는 배포 전략을 설계합니다.
+      - AWS CloudFormation -> Updated stack
+      - AWS Systems Manager
+      - AWS CodePipeline : AWS CodeCommit -> AWS CodeBuild -> AWS CodeDeploy
+      - Amazon SageMaker
+    - 2.2 비즈니스 연속성을 보장하는 솔루션을 설계합니다.
+      - RTO, RPO, 비용, 백업과 복원
+      - AWS Elastic Disaster Recovery 
+      - Amazon RDS database replication 
+      - AWS DataSync, AWS Storage Gateway
+      - AWS CloudWatch - Alarm -> Amazon EventBridge -> [AWS Lambda, Amazon Simple Notification Service]
+    - 2.3 요구 사항에 따라 보안 제어를 결정합니다.
+      - Amazon GuardDuty, AWS Security Hub, AWS WAF, AWS Shield
+      - AWS IAM, AWS Secrets Manager, AWS Config
+      - Interface endpoints, Gateway endpoints, AWS PrivateLink
+    - 2.4 신뢰성 요구 사항을 충족하는 전략을 설계합니다.
+      - 동기/비동기 decoupling
+      - Amazon S3, Cross-Region Replication, Amazon EFS, Amazon FSx
