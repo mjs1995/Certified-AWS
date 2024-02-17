@@ -45,3 +45,23 @@
     - 2.4 신뢰성 요구 사항을 충족하는 전략을 설계합니다.
       - 동기/비동기 decoupling
       - Amazon S3, Cross-Region Replication, Amazon EFS, Amazon FSx
+    - 2.5 성능 목표를 충족하는 솔루션을 설계합니다.
+      - EC2 instance : Instance family, Instance size
+      - Attached storage : Volume type, Volume size
+      - Other components : Elastic Fabric Adapter 
+      - design patterns : Replicas, Buffering, Caching
+      - Amazon DynamoDB, Amazon Neptune
+    - 2.6 솔루션 목표와 목적을 달성하기 위한 비용 최적화 전략 결정 
+      - ![image](https://github.com/mjs1995/Book_review/assets/47103479/64c2f0fb-64d0-44b6-8f03-fab8ca024875)
+      - AWS Site-to-Site VPN, AWS Direct Connect, AWS Transit Gateway
+      - AWS Pricing Caculator, AWS Cost Explorer, AWS Trusted Advisor 
+  - 3.0 기존 솔루션의 지속적인 개선
+    - 3.2 보안을 개선하기 위한 전략을 결정합니다.
+    - 3.3 성과 개선을 위한 전략을 결정합니다.
+    - 3.4 신뢰성을 개선하기 위한 전략을 결정합니다.
+    - 3.5 비용 최적화를 위한 기회를 파악합니다.
+  - 4.0 워크로드 마이그레이션 및 현대화 가속화
+    - 4.1 마이그레이션할 수 있는 기존 워크로드 및 프로세스를 선택합니다.
+    - 4.2 기존 워크로드를 마이그레이션하기 위한 최적의 .
+    - 4.3 기존 워크로드에 새로운 아키텍처를 결정합니다.
+    - 4.4 현대화 및 개선 기회를 파악합니다.
