@@ -3,7 +3,6 @@
 
 # Exam Prep Standard Course: AWS Certified Solutions Architect - Professional (SAP-C02)
 - https://explore.skillbuilder.aws/learn/course/external/view/elearning/14951/exam-prep-standard-course-aws-certified-solutions-architect-professional-sap-c02
-# SAP 도메인
 - 도메인
   - 1.0 조직 복잡성을 위한 솔루션 설계
     - 1.1 네트워크 연결 전략을 설계합니다.
@@ -84,6 +83,31 @@
       - AWS Budgets, Amazon CloudWatch 
   - 4.0 워크로드 마이그레이션 및 현대화 가속화
     - 4.1 마이그레이션할 수 있는 기존 워크로드 및 프로세스를 선택합니다.
-    - 4.2 기존 워크로드를 마이그레이션하기 위한 최적의 .
+      - 7가지 마이그레이션 전략 : Retire, Retain, Rehost(or lift-and-shift), Relocate, Replatform, Repurchase, Refactor, 
+    - 4.2 기존 워크로드를 마이그레이션하기 위한 최적의 마이그레이션 접근 방식 결정
+      - AWS Organizations, AWS Control Tower
+      - AWS IAM Identity Center, AWS Directory Service, AWS Managed Microsoft AD, AD Connector 
+      - AWS Snowcone, AWS Snowball Edge, AWS Snowmobile 
+      - AWS Application Migration Service, AWS Application Discovery Service, AWS Migration Hub 
     - 4.3 기존 워크로드에 새로운 아키텍처를 결정합니다.
+      - EC2 Instance family, EC2 instance size, EC2 scaling strategy 
+      - Amazon ECR, Amazon ECS, Amazon EKS, AWS Fargate, Amazon EC2 
+      - EC2 instance store, Amazon EBS, Volume Gateway 
+      - Amazon FSx: Amazon FSx Window File Server, Amazon FSx for Lustre, Amazon FSx for NetApp ONTAP
+      - Amazon EFS
+      - Amazon DynamoDB, Amazon Redshift, Self-managed database on Amazon EC2 
     - 4.4 현대화 및 개선 기회를 파악합니다.
+      - Amazon SQS, Amazon SNS, Amazon EventBridge, AWS Step Functions 
+      - Amazon FSx for Lustre, Amazon FSx Window File Server, Amazon EFS, Amazon S3
+
+## AWS Technical Essentials (Korean)
+- https://explore.skillbuilder.aws/learn/course/15366/aws-technical-essentials-korean-na-hangug-eo-gang-ui
+- Amazon Web Services 소개
+  - 클라우드 컴퓨팅의 6가지 이점
+    - 종량 과금제
+    - 거대한 규모의 경제로 얻게 되는 이점
+    - 용량 추정 불필요
+    - 속도 및 대응력 향상
+    - 비용 절감 실현
+    - 몇 분 만에 전 세계에 배포
+  - 적합한 AWS 리전 선택 : 대기 시간, 가격, 서비스 가용성, 규정 준수
