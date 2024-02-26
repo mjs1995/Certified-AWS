@@ -246,3 +246,40 @@
       - 사용한 만큼만 비용을 지불하면 됩니다(스토리지를 미리 프로비저닝할 필요가 없음).
       - Amazon S3는 단일 리전의 여러 가용 영역에 객체를 복제합니다.
       - Amazon S3는 컴퓨팅에 연결된 스토리지가 아닙니다.
+    - Amazon Elastic File System(Amazon EFS) 및 Amazon FSx
+      - Amazon Elastic File System(Amazon EFS) : 완전관리형 NFS 파일 시스템
+      - Amazon FSx for Windows File Server : SMB 프로토콜을 지원하는 Windows Server에 구축된 완전관리형 파일 서버
+      - Amazon FSx for Lustre : S3와 통합되는 완전관리형 Lustre 파일 시스템
+      - 다음은 Amazon EFS 및 Amazon FSx를 다른 서비스와 비교할 때 알아야 할 몇 가지 중요한 특징입니다.
+        - 파일 스토리지입니다.
+        - 사용한 만큼만 비용을 지불하면 됩니다(스토리지를 미리 프로비저닝할 필요가 없음).
+        - Amazon EFS와 Amazon FSx는 여러 EC2 인스턴스에 탑재할 수 있습니다.
+- 데이터베이스
+  - 관계형 데이터베이스 이점
+    - 조인
+    - 중복 감소
+    - 친숙도
+    - 정확성
+  - Amazon RDS
+    - 상용: Oracle, SQL Server
+    - 오픈 소스: MySQL, PostgreSQL, MariaDB
+    - 클라우드 네이티브: Amazon Aurora
+  - Amazon DynamoDB
+    - Amazon DynamoDB는 완전관리형 NoSQL 데이터베이스 서비스로서 원활한 확장성과 함께 빠르고 예측 가능한 성능을 제공합니다
+    - DynamoDB 구성 요소: 테이블, 항목, 속성
+  - AWS 데이터베이스 포트폴리오
+    - 관계형 : 기존 애플리케이션, ERP, CRM, 전자 상거래	- Amazon RDS, Amazon Aurora, Amazon Redshift
+    - 키-값 : 높은 트래픽의 웹 앱, 전자 상거래 시스템, 게임 애플리케이션 - Amazon DynamoDB
+    - 인 메모리 : 캐싱, 세션 관리, 게임 순위표, 지리 공간 애플리케이션 - Amazon ElastiCache for Memcached, Amazon ElastiCache for Redis
+    - 문서 : 콘텐츠 관리, 카탈로그, 사용자 프로필 - Amazon DocumentDB(MongoDB호환 가능)
+    - 와이드 컬럼 : 장비 관리, 플릿 관리 및 라우팅 최적화에 사용하는 대규모 산업용 앱 - Amazon Keyspaces(Apache Cassandra용)
+    - 그래프 : 사기 탐지, 소셜 네트워킹, 추천 엔진 - Amazon Neptune
+    - 시계열 : IoT 애플리케이션, DevOps, 산업용 텔레메트리 - Amazon Timestream
+    - 원장 : 레코드 시스템, 공급망, 등록, 은행 거래 - Amazon QLDB
+- 모니터링, 최적화 및 서버리스 
+  - 모니터링 이점
+    - 최종 사용자가 운영 문제를 인식하기 전에 사전 대응할 수 있습니다
+    - 리소스의 성능 및 안정성을 개선합니다
+    - 보안 위협 및 이벤트를 인식합니다
+    - 비즈니스를 위해 데이터 중심의 의사 결정을 수립합니다
+    - 보다 비용 효율적인 솔루션을 구축합니다
