@@ -739,3 +739,29 @@
   - 애플리케이션 트래픽이 예측 가능한 경우
   - 트래픽이 일관되거나 점진적으로 변화하는 애플리케이션을 실행할 경우
   - 비용 관리를 위해 용량 요구 사항을 예측할 수 있는 경우
+
+## Amazon RDS Service Primer
+- Amazon Relational Database Service(RDS)는 클라우드에서 관계형 데이터베이스를 더욱 쉽게 설치, 운영, 확장할 수 있게 지원하는 서비스입니다
+- Amazon Relational Database Service(Amazon RDS)는 분산 관계형 데이터베이스 관리 서비스입니다.
+
+## AWS Networking Basics
+- 그룹별 AWS 네트워킹 서비스
+  - Network 기반: Amazon VPC, AWS Transit Gateway, AWS PrivateLink
+  - 하이브리드 연결: AWS Direct Connect, AWS Site-to-Site VPN, AWS Client VPN, AWS Cloud WAN
+  - 엣지 네트워킹: Amazon CloudFront, Amazon Route 53, AWS Global Accelerator
+  - 애플리케이션 네트워킹: AWS App Mesh, Amazon API Gateway, AWS Cloud Map
+  - 네트워킹 보안: AWS Shield, AWS WAF, AWS Network Firewall, AWS Firewall Manager
+- AWS Well-Architected Framework - 애플리케이션과 워크로드를 위한, 안전하고 효율적이며 복원력 있는 고성능 네트워크를 빌드합니다. 이 프레임워크는 다음 6개 요소를 중심으로 빌드되었습니다.
+  - 운영 우수성
+  - 보안
+  - 신뢰성
+  - 성능 효율성
+  - 비용 최적화
+  - 지속 가능성
+- 네트워킹
+  - 네트워킹에는 다음 세 가지 기본 유형의 네트워크 프로토콜이 있습니다.
+    - 네트워크 관리 프로토콜
+      - HTTP – Hypertext transfer protocol(HTTP)은 브라우저와 서버의 통신을 허용하는 애플리케이션 계층 프로토콜입니다.
+      - TCP – Transmission Control Protocol(TCP)은 네트워크를 통해 공유할 수 있는 패킷으로 데이터를 구분합니다. 그런 다음, 스위치와 라우터 같은 디바이스가 패킷을 지정된 대상에 전송할 수 있습니다.
+      - UDP – User Datagram Protocol(UDP)은 TCP와 비슷한 방식으로 작동하고, 네트워크를 통해 데이터 패킷을 전송합니다. 두 프로토콜의 주요 차이점은, TCP는 애플리케이션과 서버 간 연결을 보장하지만 UDP는 보장하지 않는다는 것입니다.
+      - IRC – Internet Relay Chat(IRC)은 텍스트 기반 통신 프로토콜입니다. 소프트웨어 클라이언트를 사용하여 서버와 통신하고 다른 클라이언트에 메시지를 전송합니다. 이 프로토콜은 다수의 분산 머신이 있는 네트워크에서 효과적입니다.
