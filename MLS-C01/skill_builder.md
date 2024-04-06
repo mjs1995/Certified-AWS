@@ -141,3 +141,27 @@
       - 필요한 사항
         - 프로덕션 변형의 하나 이상의 모형 이름
         - Amazon SageMaker가 각 프로덕션 변형을 호스트하기 위해 시작하도록 하려는 기계 학습 컴퓨팅 인스턴스 프로덕션에서 모형을 호스팅할 때 엔드포인트를 구성하여 배포된 기계 학습 컴퓨팅 인스턴스를 탄력적으로 크기 조정할 수 있습니다.
+    - HTTPS 엔드포인트 생성
+      - 엔드포인트 구성을 Amazon SageMaker에 제공해야 합니다. 그러면 이 서비스가 기계 학습 컴퓨팅 인스턴스를 시작하고 구성에 지정된 대로 하나 이상의 모형을 배포합니다.
+  - 기계 학습 모형을 프로덕션 환경에 제공할 때 주의 사항
+    - 소프트웨어 엔지니어링 원칙을 적용합니다. 오류 복구 코드를 추가하고 예기치 않은 데이터 입력에 대한 테스트가 있는지 확인합니다. 다른 시스템에 대해 수행되는 단위 테스트, 품질 보증 및 사용자 수락 테스트와 동일한 종류의 테스트를 수행합니다. 기계 학습 시스템이 연구 단계에서 개발 단계로 진행된 경우, 이러한 권장 소프트웨어 엔지니어링 방식 중 일부가 일관되게 적용되었을 수 있습니다. AWS CodeBuild 및 AWS CodeCommit과 같은 일반적인 DevOps 도구를 사용하여 이 시스템을 자동화합니다.
+    - 데이터 원본의 변경 사항을 추적, 식별 및 처리합니다. 데이터는 시간이 지남에 따라 변경될 수 있습니다. 단일 소스에서 데이터 유형을 변경하면 전체 파이프라인이 손상될 수 있습니다. 데이터 원본을 생성하는 소프트웨어가 변경될 경우 연쇄적인 영향을 미칠 수 있습니다.
+    - 결과에 대한 지속적인 모니터링 및 평가를 수행합니다. 기계 학습 시스템의 결과를 기대치와 비교해 평가합니다. 프로젝트의 기대치에 대한 오류율 및 오류의 클래스를 확인하는 방법을 구축합니다. 전체 오류율이 동일한 경우, 여러 오류 등급의 비율이 동일합니까? 모형 드리프트가 발생합니까?
+    - 향후 모형을 개선하는 데 사용할 수 있는 프로덕션 추론에서 데이터를 수집하는 방법을 만듭니다.
+  - Amazon CloudWatch 지표를 사용하는 척도화 정책 정의 및 적용
+    - Auto Scaling은 정책을 사용하여 실제 워크로드에 따라 인스턴스 수를 늘리거나 줄임
+    - AWS Management Console을 사용하여 미리 정의된 지표에 따라 척도화 정책을 적용할 수 있음
+    - 미리 정의돈 지표는 열거형에 정의되어 있으므로 코드에서 이름으로 지정하거나 콘솔에서 사용할 수 있음
+    - 항상 Auto Scaling 구성을 로드 테스트하여 프로덕션 트래픽을 관리하는 데 사용하기 전에 올바르게 작동하는지 확인
+  - 서비스 FAQ
+    - 다음은 기계 학습 관련 AWS 서비스에 대한 이해도를 높이는 데 유용한 정보를 제공하는 서비스 FAQ의 링크입니다.
+    - [AWS SageMaker FAQ](https://aws.amazon.com/ko/sagemaker/faqs/)
+    - [AWS Comprehend FAQ](https://aws.amazon.com/ko/comprehend/faqs/)
+    - [AWS Lex FAQ](https://aws.amazon.com/ko/lex/faqs/)
+    - [AWS Polly FAQ](https://aws.amazon.com/ko/polly/faqs/)
+    - [AWS Rekognition FAQ](https://aws.amazon.com/ko/rekognition/faqs/)
+    - [AWS Translate FAQ](https://aws.amazon.com/ko/translate/faqs/)
+    - [AWS Transcribe FAQ](https://aws.amazon.com/ko/transcribe/faqs/)
+    - [AWS DeepLens FAQ](https://aws.amazon.com/ko/deeplens/faqs/)
+  - AWS 블로그
+    - [AWS Machine Learning 블로그](https://aws.amazon.com/ko/blogs/machine-learning/)
