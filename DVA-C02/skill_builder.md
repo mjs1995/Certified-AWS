@@ -160,3 +160,25 @@
       - 호스트의 포드 간 통신은 이 veth 터널을 통해 발생합니다. 각 노드에 컨테이너의 네트워크 범위가 할당되고 각 포드는 동일한 호스트에 있는 컨테이너들이 통신할 수 있도록 해당 범위의 IP 주소를 가져옵니다.
     - 클러스터 외부에서의 인그레스 연결
       - 노드 간 통신을 간소화하기 위해 Amazon EKS는 Kubernetes용 Amazon VPC CNI 플러그 인을 통해 Amazon VPC 네트워킹을 Kubernetes에 통합합니다. CNI를 사용하면 Kubernetes 포드는 VPC 네트워크에서처럼 해당 포드 내에서 동일한 IP 주소를 가질 수 있습니다.
+  - 수신(Ingress)
+    - Kubernetes 수신 객체를 사용하면 사용하는 로드 밸런서의 수를 줄일 수 있습니다. 수신 객체는 클러스터 외부에 있는 HTTP 및 HTTPS 경로를 서비스에 노출하고 트래픽 규칙을 정의합니다.
+  - AWS Load Balancer Controller
+    - AWS Load Balancer Controller는 Kubernetes 클러스터용 ELB(Elastic Load Balancer(Elastic Load Balancing)를 관리하는 컨트롤러입니다.
+    - 로드 밸런서는 Kubernetes 수신을 생성하는 경우 Application Load Balancer이거나 LoadBalancer 유형의 Kubernetes 서비스를 생성하는 경우 Network Load Balancer일 수 있습니다.
+    - Application Load Balancer는 Open Systems Interconnection(OSI) 모델의 계층 7(예: HTTP 또는 HTTPS)에서의 애플리케이션 트래픽을 밸런싱하는 반면,
+    - Network Load Balancer는 계층 4[예: Transmission Control Protocol(TCP), User Datagram Protocol(UDP) 등]에서의 네트워크 트래픽을 밸런싱합니다.
+    - Application Load Balancer는 노드 또는 Fargate에 배포된 포드와 함께 사용될 수 있습니다.
+    - Application Load Balancer는 퍼블릭 또는 프라이빗 서브넷에 배포될 수 있습니다.
+    - Network Load Balancer는 Amazon EC2 IP및 인스턴스 대상에 배포된 포드나 Fargate IP 대상에 네트워크 트래픽을 로드 밸런싱할 수 있습니다.
+- EKS 다른 서비스와 통합
+  - Kubernetes 영구 스토리지
+    - 포드 수명 주기와 상관 없이 데이터 지속성이 필요한 애플리케이션 워크로드에는 두 가지 이상의 Kubernetes 객체와 영구 볼륨(PV) 및 영구 볼륨 클레임(PVC)이 필요합니다.
+    - PV는 임시 볼륨이지만 개별 포드에 독립적인 수명 주기를 가진다는 점을 상기시킵니다.
+    - PVC는 클러스터 사용자에 의한 스토리지에 대한 요청으로, 요청에 스토리지 양, 스토리지 액세스 종류 및 스토리지 성능에 대한 세부정보가 포함됩니다.
+  - AMAZON EBS 사용
+    - 클러스터 사용자가 필수 파라미터와 함께 PVC를 제출할 때 Amazon EBS 스토리지 클래스가 EBS CSI 드라이버에서 호출되어 PVC 요청당 스토리지를 할당합니다.
+    - EBS CSI 드라이버는 EBS 볼륨을 생성하고 볼륨을 지정된 클러스터 노드에 연결하는 데 필요한 AWS API를 호출합니다. 연결되면 영구 볼륨이 PVC에 할당됩니다.
+    - Amazon EBS CSI 드라이버를 구성하여 볼륨 크기 조정, 볼륨 스냅샷 생성 등을 포함한 여러 가지 Amazon EBS 기능을 사용할 수 있습니다.
+  - AMAZON EFS 사용
+    - Amazon EFS에서 지원하는 Kubernetes 스토리지 클래스는 Amazon EFS CSI 드라이버에 기존 파일 시스템에 대한 액세스 포인트를 생성하기 위한 적절한 AWS API를 호출할 것을 지시합니다.
+    - PVC가 생성되면 동적으로 프로비저닝된 PV가 Amazon EFS 파일 시스템에 액세스하는 데 해당 액세스 포인트를 사용한 다음 PVC로 바인딩됩니다.
