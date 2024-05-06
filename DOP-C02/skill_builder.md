@@ -1,0 +1,27 @@
+# Developer Learning Plan
+## Amazon API Gateway for Serverless Applications
+- API Gateway
+  - API 관리의 어려움
+    - API를 사용하면 많은 이점이 있지만 API를 관리하는 동안 자주 발생하는 문제에 직면할 수도 있습니다.
+      - 서버리스 애플리케이션에서 API 호출 처리
+      - 여러 API 버전 및 환경으로 작업
+      - 액세스 및 권한 부여 제어
+      - 트래픽 스파이크 관리
+      - 서드 파티 액세스 모니터링
+  - API Gateway의 개발자 기능
+    - 여러 버전의 API를 동시에 실행
+      - API Gateway를 사용하면 같은 API의 여러 버전을 동시에 실행할 수 있으므로 신속하게 새 버전을 반복, 테스트 및 릴리스할 수 있습니다.
+      - API를 변경하고 다양한 사용자를 위해 여러 API 버전을 호스팅할 수도 있습니다.
+    - 빠른 SDK 생성
+      - REST API를 사용하는 경우 API Gateway에서는 다양한 플랫폼을 위한 클라이언트 소프트웨어 개발 키트(SDK)를 생성할 수 있으며, 생성한 SDK를 이용하여 애플리케이션에서 새로운 API를 빠르게 테스트하고 서드 파티 개발자에게 해당 SDK를 배포할 수 있습니다.
+      - 생성된 SDK는 AWS 자격 증명을 사용하여 API 키 및 서명 요청을 처리합니다. API Gateway는 Java, JavaScript, Android용 Java, iOS용 Objective-C 또는 Swift, Ruby용 클라이언트 SDK를 생성할 수 있습니다
+    - 요청/응답 데이터 변환 또는 검증
+      - API Gateway를 사용하면 또한 수신 및 발신 요청을 모두 변환하고 유효성을 검사할 수도 있습니다.
+  - API 액세스 관리 기능
+    - 지연 시간 단축 및 트래픽 조절
+      - API Gateway는 엣지 로케이션의 Amazon CloudFront 글로벌 네트워크를 활용하여 최종 사용자에게 API 요청 및 응답에 대해 최소 지연 시간을 제공합니다.
+      - 이 서비스를 통해 트래픽을 조절하고 API 호출 권한을 부여하여 백엔드 작업이 트래픽 스파이크에 대처하고 백엔드 시스템이 불필요하게 호출되지 않도록 할 수도 있습니다.
+    - 기본 제공되는 유연한 권한 부여 옵션
+      - API Gateway는 몇 가지 권한 부여 옵션을 제공합니다. AWS Identity and Access Management(IAM)와 Amazon Cognito를 사용하여 API에 대한 액세스 권한을 부여할 수 있습니다.
+      - OAuth 토큰을 사용하는 경우 API Gateway가 기본 OpenID Connect(OIDC) 및 OAuth2 지원도 제공합니다.
+      - 사용자 지정 권한 부여 요구 사항을 지원하기 위해 Lambda에서 Lambda 권한 부여자를 호출할 수 있습니다. Lambda 권한 부여자를 사용하면 사용자 지정 Lambda 함수를 사용하여 고유한 권한 부여 코드를 개발할 수 있습니다.
