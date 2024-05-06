@@ -459,3 +459,25 @@
   - AWS Copilot - AWS에서 컨테이너화된 애플리케이션을 시작하고 관리하기 위한 CLI(ECS, Fargate 및 AWS App Runner와 통합 가능)
   - AWS Cloud Development Kit(CDK)
   - AWS Amplify - 프런트 엔드 및 모바일 개발자가 AWS에서 전체 스택 애플리케이션을 빌드할 수 있도록 특별히 설계된 도구 및 기능 세트
+  - AWS X-Ray - 애플리케이션이 처리하는 요청에 대한 데이터를 수집하며 인사이트를 보고, 필터링하고 확보하고 문제 또는 최적화를 식별하는 도구를 제공하는 서비스
+  - AWS Cloud9 - 통합 개발 환경(IDE)
+  - AWS Cloud Shell - 브라우저 기반 사전 인증 셸
+- 백서
+  - 시험과 관련된 AWS 백서 및 FAQ를 탐색하여 AWS 서비스 및 모범 사례에 대해 알아봅니다.
+  - [AWS Well-Architected Framework](https://aws.amazon.com/ko/architecture/well-architected/?da=sec&sec=prep&wa-lens-whitepapers.sort-by=item.additionalFields.sortDate&wa-lens-whitepapers.sort-order=desc&wa-guidance-whitepapers.sort-by=item.additionalFields.sortDate&wa-guidance-whitepapers.sort-order=desc)
+  - [Practicing Continuous Integration and Continuous Delivery on AWS](https://d1.awsstatic.com/whitepapers/DevOps/practicing-continuous-integration-continuous-delivery-on-AWS.pdf)
+  - [Microservices on AWS](https://d1.awsstatic.com/whitepapers/microservices-on-aws.pdf)
+  - [Serverless Architectures with AWS Lambda](https://d1.awsstatic.com/whitepapers/serverless-architectures-with-aws-lambda.pdf)
+  - [Optimizing Enterprise Economics with Serverless Architectures](https://d1.awsstatic.com/whitepapers/optimizing-enterprise-economics-serverless-architectures.pdf)
+  - [Running Containerized Microservices on AWS](https://d1.awsstatic.com/whitepapers/DevOps/running-containerized-microservices-on-aws.pdf)
+  - [Blue/Green Deployments on AWS](https://d1.awsstatic.com/whitepapers/AWS_Blue_Green_Deployments.pdf)
+- FAQs
+  - [Amazon SQS](https://aws.amazon.com/ko/sqs/faqs/?da=sec&sec=prep)
+  - [Amazon DynamoDB](https://aws.amazon.com/ko/dynamodb/faqs/?da=sec&sec=prep)
+  - [Amazon ElastiCache](https://aws.amazon.com/ko/elasticache/faqs/?da=sec&sec=prep)
+  - [Amazon Kinesis](https://aws.amazon.com/ko/kinesis/data-streams/faqs/?da=sec&sec=prep)
+  - [AWS Lambda](https://aws.amazon.com/ko/lambda/faqs/?da=sec&sec=prep)
+  - [Amazon API Gateway](https://aws.amazon.com/ko/api-gateway/faqs/?da=sec&sec=prep)
+  - [AWS Elastic Beanstalk](https://aws.amazon.com/ko/elasticbeanstalk/faqs/?da=sec&sec=prep)
+  - [AWS Identity and Access Management(AWS IAM)](https://aws.amazon.com/ko/iam/faqs/?da=sec&sec=prep)
+  - [AWS Key Management Service](https://aws.amazon.com/ko/kms/faqs/?da=sec&sec=prep)
