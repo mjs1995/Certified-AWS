@@ -25,3 +25,28 @@
       - API Gateway는 몇 가지 권한 부여 옵션을 제공합니다. AWS Identity and Access Management(IAM)와 Amazon Cognito를 사용하여 API에 대한 액세스 권한을 부여할 수 있습니다.
       - OAuth 토큰을 사용하는 경우 API Gateway가 기본 OpenID Connect(OIDC) 및 OAuth2 지원도 제공합니다.
       - 사용자 지정 권한 부여 요구 사항을 지원하기 위해 Lambda에서 Lambda 권한 부여자를 호출할 수 있습니다. Lambda 권한 부여자를 사용하면 사용자 지정 Lambda 함수를 사용하여 고유한 권한 부여 코드를 개발할 수 있습니다.
+    - 서드 파티 개발자를 위한 API 키
+      - REST API를 사용하는 경우 API Gateway는 API에 액세스하는 서드 파티 개발자 에코시스템을 관리할 수 있도록 지원합니다.
+      - API Gateway에서 API 키를 생성하고, API 키별로 세부적인 액세스 권한을 설정하고, 서드 파티 개발자가 API에 액세스할 수 있도록 해당 키를 서드 파티 개발자에게 배포할 수 있습니다.
+      - API 키는 API에 대한 기본 권한 부여 메커니즘은 아니지만 특정 사용자 또는 서비스의 사용량을 추적할 수 있는 기능을 제공합니다.
+  - 사용 사례에 가장 적합한 API 유형 선택
+    - REST API
+      - 요금에 API 구축, 관리 및 게시에 필요한 모든 기능이 포함된 세트
+      - 백엔드 인증, AWS WAF 또는 리소스 정책에 인증서를 사용하는 API 구축
+      - 엣지 최적화 또는 프라이빗 API 유형이 필요한 워크로드
+      - REST는 Representational State Transfer의 약자입니다. REST는 클라이언트가 서버 데이터에 액세스하는 데 사용할 수 있는 GET, PUT, DELETE와 같은 함수 집합을 정의합니다. 클라이언트와 서버는 HTTP를 사용하여 데이터를 교환합니다.
+      - REST API의 주된 특징은 스테이스리스라는 점입니다. 스테이트리스는 서버가 요청 간에 클라이언트 데이터를 저장하지 않음을 의미합니다.
+      - REST API는 단일 솔루션에서 API 프록시 기능 및 관리 기능을 제공합니다. 또한 REST API는 사용 플랜, API 키, 게시, API 수익 창출 같은 API 관리 기능도 제공합니다.
+    - HTTP API
+      - 네이티브 OIDC 및 OAuth 2 권한 부여 기능이 탑재된 최신 API 구축
+      - Lambda 또는 모든 HTTP 엔드포인트를 위한 프록시 API 구축
+      - 지연 시간에 민감한 워크로드용 API
+      - Hypertext Transfer Protocol(HTTP) API를 사용하여 REST API보다 지연 시간이 짧고 비용이 저렴한 RESTful API를 만들 수 있습니다.
+      - HTTP API를 사용하여 Lambda 함수 또는 라우팅 가능한 HTTP 엔드포인트로 요청을 보낼 수 있습니다.
+      - HTTP API는 Lambda 함수 또는 HTTP 백엔드에 프록시 역할을 하는 API를 구축하는 데 최적화되어 서버리스 워크로드에 적합합니다. API 관리 기능은 현재 제공하지 않습니다.
+    - WEBSOCKET API
+      - 클라이언트와 서비스가 독립적으로 서로 메시지를 보낼 수 있는 양방향 통신
+      - 클라이언트가 명시적으로 요청하지 않아도 서비스가 데이터를 클라이언트로 푸시할 수 있어 더 풍부한 클라이언트/서비스 상호 작용
+      - 실시간 통신용 API
+      - WebSocket API는 클라이언트가 WebSocket 프로토콜을 통해 액세스할 수 있는 API를 제공합니다.
+      - REST 및 HTTP API와 달리 WebSocket API는 양방향 통신을 허용합니다.
