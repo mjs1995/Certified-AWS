@@ -1,0 +1,27 @@
+# AWS Networking Practical Approaches
+- AWS의 네트워킹
+  - AWS는 다음과 같은 제품 기능을 제공합니다.
+    - 네트워크 트래픽 최적화: Amazon EBS 최적화 인스턴스, Amazon S3 Transfer Acceleration, 및 동적 Amazon CloudFront
+    - 네트워크 거리 및 지터 감축: 아마존 Route 53 지연 시간 라우팅, Amazon VPC 엔드포인트, AWS Direct Connect, 및 AWS Global Accelerator
+  - AWS Well-Architected Framework는 다음을 지원합니다.
+    - 특정 요구 사항에 맞는 네트워크를 구축합니다. 
+    - 설계가 네트워크와 Amazon VPC를 최적화하도록 제시된 특정 질문을 강조 표시합니다.
+    - 네트워크를 설계 및 구축하는 과정에서 내리는 결정이 안전하고 비용 효율적인 환경을 관리, 확장 및 운영하는 데 어떻게 도움이 되는지 이해합니다.
+  - AWS Well-Architected Framework를 위한 하이브리드 네트워킹 렌즈
+    - 데이터
+      - 네트워킹 환경의 데이터 계층은 AWS에서 호스팅되는 애플리케이션과 온프레미스 데이터 센터 간의 네트워크 트래픽에 대한 데이터 경로를 제공하기 때문에 중요합니다. 
+      - 네트워크 트래픽을 전달하기 위해 AWS와 온프레미스 데이터 간의 연결 옵션을 신중하게 고려하는 것이 중요합니다.
+      - 하이브리드 네트워킹 렌즈는 AWS VPN(AWS Virtual Private Network), AWS Direct Connect 및 Amazon VPC를 사용하여 AWS를 데이터 센터 확장으로 활용하여 애플리케이션 팀의 민첩성과 시장 출시 속도를 지원할 것을 권장합니다. 
+      - AWS VPN 및 Direct Connect는 이러한 하이브리드 네트워킹 워크로드에 대한 연결을 제공하기 위해 네트워크 경로로 사용됩니다.
+    - 모니터링
+      - 모니터링 및 구성 관리는 하이브리드 네트워킹 환경의 통찰력을 얻고 성능을 향상시키는 데 매우 중요합니다. 
+      - AWS는 다음과 같은 모니터링 및 구성 관리 서비스를 제공합니다. 
+      - 이를 통해 AWS 서비스를 모니터링하고 비즈니스 요구에 따라 성능 문제의 근본 원인을 해결할 수 있습니다.
+        - Amazon CloudWatch 
+        - AWS Personal Health Dashboard
+        - VPC Reachability Analyzer
+        - Transit Gateway Network Manager(네트워크 관리자)
+        - Route Analyzer, Transit Gateway Network Manager 에 포함
+        - AWS Config 
+    - 보안
+      - 하이브리드 네트워킹 환경의 보안도 매우 중요하며 온프레미스 및 클라우드 환경 전반에 걸쳐 보호를 제공해야 합니다. AWS 내의 트래픽과 인터넷 및 온프레미스 네트워크에서 AWS로 흐르는 트래픽에 대한 보안 제어를 구현하는 것이 좋습니다. 
