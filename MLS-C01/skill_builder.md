@@ -506,3 +506,28 @@
     - 딥 러닝(DL) 모델 실행 시 클라우드에서 추론당 최소 비용
     - LLM 및 확산 모델에서 추론당 최소 비용으로 고성능 제공
   - LLM 실무자는 AWS Neuron SDK를 사용하여 고성능 훈련을 수행하고, Trainium 및 Inferentia에서는 각각 고성능과 짧은 지연 시간 추론을 수행할 수 있습니다. 
+
+## Using Amazon SageMaker for Training Language Models
+- SageMaker 기본 사항
+  - Amazon SageMaker는 Amazon Web Services(AWS)에서 제공되는 완전관리형 기계 학습(ML) 서비스입니다. 
+  - SageMaker를 사용하면 개발자 및 데이터 과학자가 ML 모델을 빠르게 구축 및 훈련하고, 해당 모델을 프로덕션용 호스팅 환경에 간편하게 배포할 수 있습니다.
+  - SageMaker는 인프라를 관리하는 완전관리형 서비스이므로 사용자가 주요 ML 태스크에 집중할 수 있습니다. 
+  - SageMaker에서 제공되는 도구와 기능은 모델 개발 프로세스 전반을 지원합니다. 
+  - 데이터 준비와 모델 구축부터 모델 배포, 모니터링, ML 작업(MLOps)에 이르기까지 SageMaker를 사용하여 각 단계를 복잡하지 않게 처리할 수 있습니다.
+  - SageMaker를 사용하면 Amazon SageMaker Studio에 액세스할 수 있습니다. 
+  - 이는 클라우드에서 모든 ML 개발 단계에 맞게 구축된 도구를 사용할 수 있는 완전 통합 개발 환경(IDE)입니다.
+- SageMaker Studio의 기능
+  - SageMaker Studio는 ML 개발 단계 수행에 맞게 특별히 설계된 도구에 액세스할 수 있는 웹 기반 사용자 인터페이스를 제공하는 IDE입니다. 
+  - IDE를 사용하여 데이터를 준비하고 ML 모델을 구축 및 훈련, 배포할 수 있습니다.
+  - SageMaker Studio 도메인 설정
+    - 연결된 Amazon Elastic File System(Amazon EFS) 볼륨
+    - 권한이 있는 사용자 목록
+    - SageMaker Studio용 보안 및 네트워킹 구성
+- SageMaker용 컴퓨팅 인스턴스 유형
+  - SageMaker는 여러 유형의 컴퓨팅 인스턴스를 제공하여 SageMaker Studio 노트북을 호스팅하고, 모델을 훈련하고, 데이터를 처리하고, 기계 학습 모델을 실행하도록 지원합니다. 
+  - Studio 노트북, SageMaker 처리, 훈련, 추론 등 필요에 따라 각 옵션에 적합한 다양한 카테고리 및 가격 구조가 마련되어 있습니다.
+  - 비용과 시간을 최적화하려면 컴퓨팅을 선택할 때 기계 학습 워크플로의 단계와 일치시키는 것이 중요합니다. 
+  - 최적의 컴퓨팅 옵션을 선택하면 훈련 속도가 빨라지고, 추론에 드는 비용을 낮추고, IDE의 유연성을 확보할 수 있습니다. 
+    - 가속화 컴퓨팅 ml.g5.4xlarge 인스턴스로 빠른 훈련
+    - 컴퓨팅 최적화 ml.c5.2xlarge 인스턴스로 추론에 드는 비용 절감
+    - SageMaker Studio 커널용 버스트 가능한 ml.t3.xlarge. 셀을 실행할 때만 컴퓨팅이 작동하지만 CPU의 전체 성능을 원할 때 사용합니다.
