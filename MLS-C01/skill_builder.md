@@ -531,3 +531,28 @@
     - 가속화 컴퓨팅 ml.g5.4xlarge 인스턴스로 빠른 훈련
     - 컴퓨팅 최적화 ml.c5.2xlarge 인스턴스로 추론에 드는 비용 절감
     - SageMaker Studio 커널용 버스트 가능한 ml.t3.xlarge. 셀을 실행할 때만 컴퓨팅이 작동하지만 CPU의 전체 성능을 원할 때 사용합니다.
+- SageMaker Python SDK 기본 사항
+  - Amazon SageMaker Python SDK는 SageMaker에서 기계 학습 모델의 구축, 훈련, 배포를 간소화하는 라이브러리 및 도구의 모음입니다.
+  - SageMaker Python SDK에서는 SageMaker API를 추상화하여 SageMaker 인스턴스 생성, 데이터 관리, 훈련 작업 구성 등 SageMaker 서비스와 리소스로 상호작용할 수 있는 간략한 인터페이스를 제공합니다.
+  - SageMaker Python SDK를 사용하면 SageMaker에서 훈련 작업을 구성 및 실행하고 데이터를 관리하며 모델을 배포할 수 있습니다. 
+  - TensorFlow, PyTorch, Apache MXNet 등 널리 사용되는 ML 프레임워크와 SDK for Python을 사용할 수 있습니다.
+  - SageMaker Python SDK 추상화
+    - 추정기	- SageMaker에 훈련 캡슐화
+    - 모델 - 구축된 ML 모델 캡슐화
+    - 예측기 - SageMaker 엔드포인트에 대해 Python 데이터 유형을 사용하여 실시간 추론 및 변환 제공
+    - 세션 - SageMaker 리소스 작업을 위한 메서드 모음 제공
+    - 변환기 - SageMaker에서 추론용 배치 변환 작업 캡슐화
+    - 프로세서 - SageMaker에서 데이터 처리용으로 실행 중인 처리 작업 캡슐화
+- 일반적인 ML 태스크에 SDK 사용
+  - 환경 설정
+  - 데이터 준비
+    - SageMaker SDK에서 제공되는 클래스와 메서드로 다양한 데이터 원본과 데이터 처리를 작업할 수 있습니다.
+    - SDK로 SageMaker Processing 작업을 시작하여 정형 데이터 및 비정형 데이터를 대규모로 처리할 수 있습니다. 
+  - 모델 훈련
+    - 데이터가 준비되면 SageMaker Python SDK를 사용하여 SageMaker Training 작업을 구성 및 시작할 수 있습니다. 
+    - SageMaker Training은 관리형 배치 ML 컴퓨팅 서비스입니다. 
+    - SageMaker Training을 사용하면 인프라를 관리하지 않고도 대규모로 모델을 훈련 및 조정하여 시간을 절약하고 비용을 줄일 수 있습니다. 
+    - SageMaker는 명령 하나로 완전한 임시 컴퓨팅 클러스터를 시작하여 메타스토어, 관리형 I/O, 배포 등 ML 기능으로 선택하는 태스크를 실행할 수 있습니다
+  - 모델 배포
+    - SageMaker는 다양한 ML 인프라 옵션과 모델 배포 옵션을 제공하여 모든 ML 추론 요구 사항을 충족하도록 지원합니다. 
+    - 모델 훈련이 완료되면 SageMaker SDK를 사용하여 SageMaker 엔드포인트에 배포하거나 서버리스 추론을 사용하거나 배치 변환 작업을 실행할 수 있습니다.
