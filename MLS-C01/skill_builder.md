@@ -556,3 +556,50 @@
   - 모델 배포
     - SageMaker는 다양한 ML 인프라 옵션과 모델 배포 옵션을 제공하여 모든 ML 추론 요구 사항을 충족하도록 지원합니다. 
     - 모델 훈련이 완료되면 SageMaker SDK를 사용하여 SageMaker 엔드포인트에 배포하거나 서버리스 추론을 사용하거나 배치 변환 작업을 실행할 수 있습니다.
+    - AWS Python SDK
+      - SageMaker SDK 외에도 AWS SDK for Python(다른 명칭: boto3)을 사용할 수 있습니다. 
+      - 이는 AWS Infrastructure Services에 활용 가능한 일반적인 Python API입니다. 
+      - 기계 학습 태스크에 SageMaker SDK for Python 및 AWS SDK for Python을 모두 사용할 수 있지만 특화된 서비스는 SageMaker SDK for Python입니다. 
+      - 이는 S3로 파일 업로드, 엔드포인트 구성, 모델 배포 등 여러 가지 기본 인프라 태스크를 추상화합니다.
+      - ```python
+        # SageMaker Python SDK 가져오기
+        importsagemaker
+        # SageMaker 세션 생성
+        session =sagemaker.Session()
+        # 훈련 데이터의 Amazon S3 위치 설정
+        s3_input =session.upload_data('train.csv', bucket='my-bucket', key_prefix='data')
+        # TensorFlow 추정기 구성
+        estimator= sagemaker.tensorflow.TensorFlow(
+          entry_point='train.py',
+          role='arn:aws:iam::111111111111:role/service-role/AmazonSageMaker-ExecutionRole-20200101T000001',
+          framework_version='2.4.1',
+          py_version='py37',
+          instance_count=1,
+          instance_type='ml.c4.xlarge')
+        # 훈련 작업 시작
+        estimator.fit(s3_input)
+        ```
+      - ```python
+        # PyTorch 클래스 가져오기
+        fromsagemaker.pytorch importPyTorch
+  
+        # 추정기 구성
+        estimator= PyTorch(
+        entry_point='train.py',
+        role='arn:aws:iam::111111111111:role/service-role/AmazonSageMaker-ExecutionRole-20200101T000001',
+        py_version='py38',
+        framework_version='1.11.0',
+        instance_count=1,
+        instance_type='ml.p3.2xlarge',
+        hyperparameters={'epochs':1, 'backend': 'gloo'},
+        )
+  
+        # Amazon S3 데이터로 훈련 작업 시작
+        estimator.fit({'training': 's3://path-to-s3-bucket'}) # 입력은 S3의 훈련 데이터로 연결되는 경로임
+        
+        # 추정기 객체를 사용하여 예측기 엔드포인트 배포
+        predictor = estimator.deploy(initial_instance_count=1, instance_type='ml.g4dn.xlarge')
+         
+        # 추론으로 input_data 모델링
+        response = predictor.predict(input_data) # 추론을 제공하려는 모델에 관한 입력 데이터 
+        ```
