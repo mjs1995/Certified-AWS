@@ -603,3 +603,30 @@
         # 추론으로 input_data 모델링
         response = predictor.predict(input_data) # 추론을 제공하려는 모델에 관한 입력 데이터 
         ```
+
+## Ingesting Language Model Data
+- 수집을 위한 데이터 준비
+  - 데이터 품질 향상
+    - LLM 개발자는 자연적으로 발생한 텍스트에서 얻은 대규모 데이터 집합에서 모델을 훈련합니다. 잘 알려진 예로 Common Crawl 및 Pile이 있습니다. 그러나 자연적으로 발생한 텍스트에는 다음 내용이 포함될 수 있습니다.
+      - 편향
+      - 부정확도
+      - 문법 오류
+      - 구문 변형
+  - SageMaker 작업 API
+    - SageMaker Processing 
+      - 이 API는 임시 컴퓨팅 클러스터를 시작하고 데이터 전처리나 후처리, 기능 엔지니어링, 데이터 확인, 모델 평가 워크로드의 단계를 실행합니다.
+    - SageMaker Training 
+      - 이 API는 모든 기능이 갖춰진 임시 컴퓨팅 클러스터를 시작하여 인프라를 관리할 필요가 없습니다. 
+      - 또한 대규모로 모델을 훈련하고 조정하는 데 드는 시간과 비용을 맞춥니다. 
+      - SageMaker Training을 사용하면 각종 스크립트를 실행할 수 있습니다. 게다가 대규모로 데이터 변환을 실행하기에도 적합합니다.
+  - SageMaker에서 다양한 분산 컴퓨팅 프레임워크를 사용할 수 있습니다
+    - Dask
+    - Ray
+    - PySpark
+- SageMaker Python SDK로 데이터 로드
+  - 데이터 스토리지 옵션
+    - SageMaker Training 작업을 사용하여 언어 모델을 훈련할 때 데이터가 저장되는 위치를 지정합니다.
+      - SageMaker 관리형 데이터 로드
+        - SageMaker는 Amazon S3, Amazon Elastic File System(Amazon EFS), FSx for Lustre와 통합됩니다. 
+        - Amazon S3와 FSx for Lustre는 모두 LLM 훈련 중에 데이터를 로드하는 옵션입니다. 
+        - 기본 제공되는 통합 기능을 사용하려면 입력 데이터 집합이 훈련 작업과 동일한 AWS 리전에 있어야 합니다.
