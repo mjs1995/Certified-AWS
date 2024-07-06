@@ -630,3 +630,28 @@
         - SageMaker는 Amazon S3, Amazon Elastic File System(Amazon EFS), FSx for Lustre와 통합됩니다. 
         - Amazon S3와 FSx for Lustre는 모두 LLM 훈련 중에 데이터를 로드하는 옵션입니다. 
         - 기본 제공되는 통합 기능을 사용하려면 입력 데이터 집합이 훈련 작업과 동일한 AWS 리전에 있어야 합니다.
+      - 기존 보유 Amazon S3 데이터 로더
+        - 자체 사용자 지정 데이터 로드 코드를 가져와 훈련 스크립트에 포함할 수 있습니다. 
+        - 예를 들어 PyTorch 데이터 집합 클래스, WebDataset, MosaicML StreamingDataset 등을 사용할 수 있습니다.
+- Amazon S3에서 데이터 수집
+  - Amazon S3로 데이터 저장
+    - Amazon S3는 업계 최고 수준의 확장성, 데이터 가용성, 보안 및 성능을 제공하는 객체 스토리지 서비스입니다. 
+    - 어디서나 원하는 양의 데이터를 저장하고 검색할 수 있도록 구축되었습니다.
+      - AWS Management Console
+      - AWS Cloud Development Kit(AWS CDK)
+      - AWS Command Line Interface(AWS CLI)
+      - API 호출을 통한 직접 방식(사전 프로비저닝 필요 없음)
+  - Amazon S3에서 읽기
+    - File Mode
+      - SageMaker Training 작업을 시작하면 SageMaker는 스토리지 위치에서 훈련 데이터를 다운로드하여 Docker 컨테이너의 로컬 디렉토리에 저장합니다. 
+      - 전체 데이터 집합이 다운로드되면 훈련이 시작됩니다.
+      - File Mode의 훈련 인스턴스에는 전체 데이터 집합을 수용할 수 있는 스토리지 공간이 충분해야 합니다. File Mode 다운로드 속도는 다음에 따라 달라집니다.
+        - 데이터 집합 크기
+        - 파일 평균 크기
+        - 파일 수
+    - Fast File Mode
+      - Fast File Mode는 훈련 인스턴스의 로컬 디스크에서 파일을 사용할 수 있는 것처럼 POSIX 호환 파일 시스템 인터페이스를 사용하여 Amazon S3 객체를 노출합니다. 
+      - 훈련 시작 시 Fast File Mode는 데이터 파일을 식별하지만 다운로드하지는 않습니다. 
+      - 전체 데이터 집합이 다운로드될 때까지 기다리지 않고 훈련이 시작될 수 있습니다.
+      - 훈련 스크립트에서 데이터가 사용되면 필요에 따라 Amazon S3 콘텐츠를 스트리밍합니다. 
+      - 즉, 데이터 집합의 크기는 훈련 인스턴스에서 사용할 수 있는 스토리지로 인한 제한이 없습니다. 또한 전체 데이터 집합이 다운로드되기 전에 훈련이 시작됩니다.
