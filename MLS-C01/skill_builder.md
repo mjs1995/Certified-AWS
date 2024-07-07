@@ -655,3 +655,28 @@
       - 전체 데이터 집합이 다운로드될 때까지 기다리지 않고 훈련이 시작될 수 있습니다.
       - 훈련 스크립트에서 데이터가 사용되면 필요에 따라 Amazon S3 콘텐츠를 스트리밍합니다. 
       - 즉, 데이터 집합의 크기는 훈련 인스턴스에서 사용할 수 있는 스토리지로 인한 제한이 없습니다. 또한 전체 데이터 집합이 다운로드되기 전에 훈련이 시작됩니다.
+    - ```python
+      import argparse
+      import os
+      import json
+      
+      if __name__ =='__main__':
+      
+      parser = argparse.ArgumentParser()
+      
+      # 클라이언트에서 전송된 하이퍼파라미터는 스크립트에 명령줄 인수로 전달됩니다.
+      parser.add_argument('—epochs', type=int, default=10)
+      parser.add_argument('—batch-size', type=int, default=100)
+      parser.add_argument('—learning-rate', type=float, default=0.1)
+      
+      # 입력 데이터와 모델 디렉터리
+      parser.add_argument('—train', type=str, default=os.environ['SM_CHANNEL_TRAIN'])
+      parser.add_argument('—test', type=str, default=os.environ['SM_CHANNEL_TEST'])
+      
+      args, _ = parser.parse_known_args()
+      ```
+- FSx for Lustre로 데이터 수집
+  - Amazon FSx for Lustre
+    - Amazon FSx for Lustre는 완전관리형의 고성능 파일 시스템으로, 기계 학습과 고성능 컴퓨팅(HPC) 워크로드에 최적화되어 있습니다. 
+    - FSx for Lustre는 짧은 지연 시간 파일 검색 기능을 갖춘 분산 파일 시스템입니다. 
+    - 짧은 지연 시간 파일 검색 기능으로 수백 기가바이트의 처리량과 수백만 건의 초당 I/O 연산(IOPS)으로 크기를 조정할 수 있습니다.
