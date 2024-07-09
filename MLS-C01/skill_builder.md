@@ -730,3 +730,25 @@
   - AWS Deep Learning Containers 사용 시 스크립트에 추가 패키지가 필요하면 패지키에 있는 requirements.txt를 프로젝트의 루트 디렉터리에 추가합니다. 
     - 훈련 작업이 시작되면 SageMaker는 pip install을 실행하여 임시 컴퓨팅 인스턴스에 패키지를 설치합니다.
   - 훈련 작업이 시작되면 사용자 스크립트에 환경 변수, 하이퍼파라미터, 기타 인수를 전달합니다. 이러한 변수를 읽고 사용하려면 스크립트 수정이 필요합니다. 
+    - 가령 SageMaker 관리형 데이터 로딩을 사용하는 경우 SM_CHANNEL_TRAIN 환경 변수를 읽어 훈련 데이터의 로컬 경로를 검색하고 이를 스크립트에 사용할 수 있습니다. 
+    - 또한 SM_MODEL_DIR을 사용하여 적합한 위치에 모델 아티팩트를 저장하면 SageMaker가 훈련 종료 시 S3에 이를 자동으로 복사할 수 있습니다. 
+    - 그런 다음 SageMaker는 해당 S3 위치에 모델 아티팩트를 복사할 수 있습니다. argparse 패키지를 사용하여 모델 아티팩트를 저장할 수도 있습니다.
+- 모니터링 및 문제 해결
+  - SageMaker 훈련 작업을 실행하면 SageMaker는 작업의 메타데이터를 추적합니다. 작업 메타데이터의 예로는 입력 데이터 경로, 하이퍼파라미터, 지표 등을 들 수 있습니다. 
+  - CloudWatch 사용
+    - Amazon CloudWatch는 실시간 로그를 자동으로 수집하고 시각화합니다. 로그 데이터에 포함되는 항목은 다음과 같습니다.
+      - 훈련 스크립트의 stdout 및 stderr 출력, CPU 사용률과 GPU(그래픽 처리 장치) 사용률
+      - 리소스 활용 지표(예: 훈련 작업의 메모리, CPU 사용률, GPU 사용률)
+- 그 외 SageMaker 문제 해결 도구
+  - SageMaker는 호스팅된 TensorBoard 환경을 제공하여 SageMaker에서 이용할 수 있는 TensorBoard 시각화 도구를 지원합니다. 
+    - 이 도구가 있으면 훈련 작업의 성능을 실시간으로 추적할 수 있습니다. 또한 SageMaker 훈련에 통합되어 있습니다. 
+  - Amazon SageMaker Profiler는 딥 러닝 모델을 훈련하는 동안 프로비저닝된 컴퓨팅 리소스를 상세히 살펴보고 작업 수준 세부 정보를 눈으로 쉽게 확인하는 데 사용할 수 있는 SageMaker의 프로파일링 기능입니다.
+  - SageMaker Profiler에서 제공되는 Python 모듈을 사용하면 PyTorch 혹은 TensorFlow 훈련 스크립트 전체에 주석을 추가하고 SageMaker Profiler를 활성화할 수 있습니다.
+  - SageMaker Python SDK 및 AWS Deep Learning Containers를 통해 모듈에 액세스할 수 있습니다.
+  - 고급 문제 해결에 SageMaker SSH Helper 활용
+    - SageMaker에서 실행 중인 컨테이너에 대한 터미널 세션을 엽니다. 이 세션에서는 중단된 훈련 작업을 진단하거나, nvidia-smi 등의 Command Line Interface(CLI) 명령을 사용하거나, 훈련 스크립트를 반복적으로 수정하여 신속히 재시작할 수 있습니다.
+    - 로컬 통합 개발 환경(IDE)에서 원격 SageMaker 코드 디버깅 세션을 수행할 수 있습니다.
+    - 포트 전달 기능을 사용해 SageMaker 내부에서 실행되는 Dask 대시보드, TensorBoard, Apache Spark 웹 UI 등의 진단 도구에 액세스할 수 있습니다.
+- SageMaker 프로파일링 도구로 컴퓨팅 최적화
+  - 대규모 컴퓨팅 클러스터에서 대규모 언어 모델(LLM)을 훈련할 때 컴퓨팅 최적화 문제에 직면하는 경우가 있을 수 있습니다. 병목 현상, 커널 시작 지연 시간, 메모리 한도, 낮은 리소스 사용률을 예로 들 수 있습니다.
+  - CloudWatch
