@@ -752,3 +752,29 @@
 - SageMaker 프로파일링 도구로 컴퓨팅 최적화
   - 대규모 컴퓨팅 클러스터에서 대규모 언어 모델(LLM)을 훈련할 때 컴퓨팅 최적화 문제에 직면하는 경우가 있을 수 있습니다. 병목 현상, 커널 시작 지연 시간, 메모리 한도, 낮은 리소스 사용률을 예로 들 수 있습니다.
   - CloudWatch
+    - CloudWatch는 다음과 같은 리소스 사용률 지표를 수집합니다.
+      - 메모리
+      - CPU 사용률
+      - GPU 사용률
+  - SageMaker Studio
+    - SageMaker Python SDK를 사용해 훈련 작업을 실행하면 SageMaker는 다음과 같은 기본 리소스 사용률 지표를 프로파일링합니다.
+      - CPU 사용률
+      - GPU 사용률
+      - GPU 메모리 사용률
+      - 네트워크
+      - I/O 대기 시간
+  - SageMaker Profiler
+    - Amazon SageMaker Profiler는 훈련하는 동안 프로비저닝된 AWS 컴퓨팅 리소스에 대한 자세한 보기를 제공합니다. 
+    - SageMaker Profiler는 PyTorch 및 Tensorflow Deep Learning Containers와 일부 인스턴스 유형에서 사용 가능합니다. 
+    - 주된 프로파일링 항목은 다음과 같습니다.
+      - CPU 및 GPU 사용률
+      - GPU에서 커널 실행
+      - CPU에서 커널 시작
+      - 동기화 작업
+      - CPU 및 GPU 전반의 메모리 작업
+      - 커널 시작과 해당 커널 실행 간의 지연 시간
+      - CPU 및 GPU 간의 데이터 전송
+- LM 훈련에 적합한 SageMaker 훈련 기능
+  - SageMaker가 있으면 자체 훈련 스크립트를 사용해 훈련 작업을 시작하고, 사용 가능한 도구를 확보해 작업을 모니터링하고 프로파일링할 수 있습니다. 
+  - SageMaker와 SageMaker 훈련에서는 모든 사용 사례에 적합한 ML 모델을 구축하는 데 도움이 되는 다양한 기능을 제공합니다.
+  - 웜 풀
