@@ -973,3 +973,26 @@
       - 이러한 파트는 이미 최적화되고 모델 병렬 프레임워크에서 추가 수집되도록 준비되어 있어 런타임 파티셔닝이 필요하지 않습니다. 
       - 이렇게 하면 모델 로드에 걸리는 시간을 단축하고 CPU와 GPU, 액셀러레이터의 메모리 사용을 줄일 수 있습니다.
 - 커널 및 컴파일 최적화
+  - 커널 최적화는 LMI 성능 향상에 크게 기여하는 소스입니다
+    - DeepSpeed
+      - DeepSpeed에는 각 모델 제품군에 대한 주입 정책이 생성되어 있습니다. 
+      - DeepSpeed에는 부분적으로 모델 속도를 높일 수 있는 수기로 작성한 PyTorch 모듈과 컴퓨팅 통합 디바이스 아키텍처(CUDA) 커널이 포함되어 있습니다.
+    - FasterTransformer
+      - FasterTransformer는 모델 전체의 속도를 높이기 위해 초기 C++ 및 CUDA를 재작성합니다.
+    - PyTorch 2.0
+      - PyTorch 2.0은 개방형 포털(torch.compile 사용)을 제공하여다양한 플랫폼에서 컴파일의 효율성을 높입니다.
+- SageMaker LMI 컨테이너 배포
+  - SageMaker는 널리 사용되는 오픈 소스 라이브러리로 대규모 모델 추론(LMI) 컨테이너를 유지 관리하여 AWS 인프라에서 대규모 모델을 호스팅합니다. 
+  - GPT, T5, OPT, BLOOM, Technology Innovation Institute(TII) Falcon이 이러한 모델의 예입니다. 
+  - 이러한 컨테이너를 통해 DeepSpeed, Accelerate, FasterTransformer, Transformers-NeuronX 등의 오픈 소스 라이브러리를 사용할 수 있습니다. 이 덕분에 모델 병렬 처리 기술을 사용해 모델 파라미터를 파티셔닝하고 여러 GPU 또는 추론용 액셀러레이터의 메모리 사용이 가능합니다. Transformers-NeuronX는 AWS 뉴런 팀이 AWS Inferentia와 AWS Trainium에서 LLM을 지원하고자 도입한 모델 병렬 처리 라이브러리입니다. 이는 Neuron 코어 전반에서 텐서 병렬 처리를 지원합니다.
+  - SageMaker 기반 대규모 모델 배포 파이프라인
+    - SageMaker LMI 컨테이너는 로우코드 및 노코드 메커니즘을 제공하여 다음 기능으로 대규모 모델 배포 파이프라인을 설정하도록 지원합니다.
+      - s5cmd를 사용하여 모델 다운로드 시간 단축
+      - 사전 구축된 최적화 모델 병렬 처리 프레임워크(예: Transformers-NeuronX, DeepSpeed, Hugging Face Accelerate, FasterTransformer)
+      - 사전 구축된 기본 소프트웨어 스택(예: PyTorch, NCCL, MPI)
+      - 구성 파일(serving.properties)을 사용하여 대규모 모델의 로우코드 및 노코드 배포
+      - SageMaker와 호환되는 컨테이너
+- SageMaker에서 모델 배포 시 기타 고려 사항
+  - 보안
+    - 모델에서 데이터가 이동할 때 데이터의 기밀 요구 사항이 준수되어야 합니다.
+    - Amazon Virtual Private Cloud(VPC) 엔드포인트를 사용하여 트래픽이 비공개 상태로 유지되도록 하십시오. 전반적인 보안 측면에서 엔드포인트의 Virtual Private Cloud(VPC) 구성을 지정하는 것이 중요합니다.
